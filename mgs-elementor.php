@@ -12,6 +12,19 @@ Text Domain: mgs_elementor
 if( !defined('ABSPATH') ){ exit; }
 error_reporting(E_ALL & ~E_NOTICE);
 
+
+//Plugin Update Checker
+require 'plugin-update-checker-5.0/plugin-update-checker.php';
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+	'https://github.com/biffly/MGS-Elementor',
+	__FILE__,
+	'MGS_Elementor'
+);
+$myUpdateChecker->setBranch('stable-branch-name');
+//Optional: If you're using a private repository, specify the access token like this:
+//$myUpdateChecker->setAuthentication('your-token-here');
+
 if( !defined('MGS_ELEMENTOR_VERSION') )		    define('MGS_ELEMENTOR_VERSION', '3.5.0');
 if( !defined('MGS_ELEMENTOR_PHP_VERSION') )     define('MGS_ELEMENTOR_PHP_VERSION', '7.3.0');
 
