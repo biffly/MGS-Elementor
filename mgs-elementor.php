@@ -21,7 +21,7 @@ $myUpdateChecker = PucFactory::buildUpdateChecker(
 	__FILE__,
 	'MGS_Elementor'
 );
-$myUpdateChecker->setBranch('stable-branch-name');
+$myUpdateChecker->setBranch('master');
 //Optional: If you're using a private repository, specify the access token like this:
 //$myUpdateChecker->setAuthentication('your-token-here');
 

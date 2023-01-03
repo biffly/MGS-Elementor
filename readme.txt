@@ -12,6 +12,13 @@ Agrega widgetes y funcionalidades a Elementor
 
 == Description ==
 
+Este plugin agrega varias opciones a Elementor, asi tambien funcionalidades extra para su sitio que no dependen de Elementor.
+
+= Widgetes Elementor =
+* **Slider** Permite crear sliders o carrousels de forma rapida.
+
+
+
 This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
 
 For backwards compatibility, if this section is missing, the full length of the short description will be used, and
