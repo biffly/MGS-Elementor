@@ -1,0 +1,50 @@
+$naranja: #ff9100;
+
+#elementor-panel-page-editor{
+    .elementor-control{
+        &.elementor-control-image_rotation{
+            .elementor-control-content{
+                background: linear-gradient(180deg, rgba(255,145,0,1) 0%, rgba(182,104,1,1) 100%);
+
+                .elementor-panel-heading{
+                    .elementor-panel-heading-toggle, .elementor-panel-heading-title{
+                        color: #000;
+                    }
+                }
+            }
+
+
+            //switch
+            .elementor-switch-label{
+                background-color: $naranja;
+            }
+
+
+            &.elementor-open{
+                .elementor-control-content{
+                    .elementor-panel-heading{
+                        .elementor-panel-heading-toggle, .elementor-panel-heading-title{
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        &.elementor-control-image_rotation_activar, &.elementor-control-image_rotation_callback{
+            //switch
+            .elementor-switch-input ~ .elementor-switch-label{
+                background-color: #34383c;
+            }
+            .elementor-switch-input:checked ~ .elementor-switch-label{
+                background-color: $naranja;
+            }
+            /*.elementor-switch{
+                .elementor-switch-label{
+                    background-color: $naranja;
+                }
+            }*/
+        }
+    }
+}

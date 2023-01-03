@@ -1,0 +1,34 @@
+.mgs-posts-wrapper{
+    display: grid;
+    &.layout-default{
+        .mgs-posts-post{
+            display: block;
+            overflow: hidden;
+            border-style: solid;
+            box-shadow: 0 0 5px rgba(#000, 0.4);
+            .thumbnail{
+                display: block;
+            }
+            .content{
+                padding: 1rem;
+                .mgs_post_title{margin-top: 0;}
+                .metas{
+                    .sep{padding: 0 0.3rem;}
+                }
+            }
+
+            &.has_thumbnail{
+                .thumbnail{
+                    background-position: center;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                }
+            }
+            &:not(.has_thumbnail){
+                .thumbnail{
+                    background: radial-gradient(circle, rgba(254,165,48,1) 0%, rgba(241,241,241,0.700717787114846) 100%);
+                }
+            }
+        }
+    }
+}
