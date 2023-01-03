@@ -3,7 +3,7 @@
 Plugin Name: MGS Elementor
 Plugin URI: 
 Description: AddOns para Elementor
-Version: 0.0.2
+Version: 0.0.4
 Author: Marcelo Scenna
 Author URI: http://www.marceloscenna.com.ar
 Text Domain: mgs_elementor
@@ -26,14 +26,14 @@ $myUpdateChecker->setBranch('stable-branch-name');
 //$myUpdateChecker->setAuthentication('your-token-here');
 
 if( !defined('MGS_ELEMENTOR_VERSION') )		    define('MGS_ELEMENTOR_VERSION', '3.5.0');
-if( !defined('MGS_ELEMENTOR_PHP_VERSION') )     define('MGS_ELEMENTOR_PHP_VERSION', '7.3.0');
+if( !defined('MGS_ELEMENTOR_PHP_VERSION') )     define('MGS_ELEMENTOR_PHP_VERSION', '7.4.0');
 
 if( !defined('MGS_ELEMENTOR_BASENAME') )        define('MGS_ELEMENTOR_BASENAME', plugin_basename(__FILE__));
 if( !defined('MGS_ELEMENTOR_PLUGIN_DIR') )      define('MGS_ELEMENTOR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 if( !defined('MGS_ELEMENTOR_PLUGIN_DIR_URL') )  define('MGS_ELEMENTOR_PLUGIN_DIR_URL', plugin_dir_url(__FILE__));
 if( !defined('MGS_ELEMENTOR_NAME') )            define('MGS_ELEMENTOR_NAME', 'MGS Elementor');
 if( !defined('MGS_ELEMENTOR_SLUG') )            define('MGS_ELEMENTOR_SLUG', 'MGS_Elementor');
-if( !defined('MGS_ELEMENTOR_PLUGIN_VERSION') )  define('MGS_ELEMENTOR_PLUGIN_VERSION', '0.0.2');
+if( !defined('MGS_ELEMENTOR_PLUGIN_VERSION') )  define('MGS_ELEMENTOR_PLUGIN_VERSION', '0.0.4');
 
 register_deactivation_hook(__FILE__, ['MGS_Elementor_AddOns', 'reset_defaul_settings']);
 
