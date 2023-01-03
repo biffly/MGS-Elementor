@@ -16,59 +16,35 @@ Este plugin agrega varias opciones a Elementor, asi tambien funcionalidades extr
 
 = Widgetes Elementor =
 * **Slider** Permite crear sliders o carrousels de forma rapida.
+* **Visualizar posts** Cree plantillas de visualización de entradas segun su gusto y placer, luego configure la cantidad, orden y dispocicion. utilice las plantillas de elementor.
 
+= Agregados/Mejoras al Container de Elementor (flexbox) =
+* **Conditional** Agrega la opcion de esconder/mostrar contenedores segun ciertas condiciones.
+* **Rotador de imagenes aleatorias** Agrege imagenes aletorias, como una imagen o como un fondo.
 
-
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
-
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
-
-A few notes about the sections above:
-
-* "Contributors" is a comma separated list of wordpress.org usernames
-* "Tags" is a comma separated list of tags that apply to the plugin
-* "Requires at least" is the lowest version that the plugin will work on
-* "Tested up to" is the highest version that you've *successfully used to test the plugin*
-* Stable tag must indicate the Subversion "tag" of the latest stable version
-
-Note that the `readme.txt` value of stable tag is the one that is the defining one for the plugin.  If the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used for displaying information about the plugin.
-
-If you develop in trunk, you can update the trunk `readme.txt` to reflect changes in your in-development version, without having that information incorrectly disclosed about the current stable version that lacks those changes -- as long as the trunk's `readme.txt` points to the correct stable tag.
-
-If no stable tag is provided, your users may not get the correct version of your code.
+= Independientes de Elementor =
+* **Carga CSS adicional** Carga un CSS personalizado que no se vera afectado por las actualizaciones de su tema.
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
-
-An answer to that question.
-
-= What about foo bar? =
-
-Answer to foo bar dilemma.
-
 == Screenshots ==
-
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Screenshots are stored in the /assets directory.
-2. This is the second screen shot
 
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
+= 0.0.4 =
+* Primera prueba del sistema de actualización
+* Agregado banner a los detalles
 
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
+= 0.0.3 =
+* BETA - Agregado de sistema de actualización [PUC](https://github.com/YahnisElsts/plugin-update-checker)
+
+= 0.0.2 =
+* BETA - Agregado de Licenciamiento
+
+= 0.0.1 =
+* Lanzaminto
 
 == Upgrade Notice ==
-
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
 
 == A brief Markdown Example ==
 
