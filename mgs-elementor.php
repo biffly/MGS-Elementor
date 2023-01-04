@@ -3,7 +3,7 @@
 Plugin Name: MGS Elementor
 Plugin URI: 
 Description: AddOns para Elementor
-Version: 0.0.4
+Version: 0.0.5
 Author: Marcelo Scenna
 Author URI: http://www.marceloscenna.com.ar
 Text Domain: mgs_elementor

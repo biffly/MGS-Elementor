@@ -31,6 +31,9 @@ Este plugin agrega varias opciones a Elementor, asi tambien funcionalidades extr
 
 == Changelog ==
 
+= 0.0.5 =
+* Segunda prueba del sistema de actualización
+
 = 0.0.4 =
 * Primera prueba del sistema de actualización
 * Agregado banner a los detalles
