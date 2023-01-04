@@ -33,7 +33,7 @@ if( !defined('MGS_ELEMENTOR_PLUGIN_DIR') )      define('MGS_ELEMENTOR_PLUGIN_DIR
 if( !defined('MGS_ELEMENTOR_PLUGIN_DIR_URL') )  define('MGS_ELEMENTOR_PLUGIN_DIR_URL', plugin_dir_url(__FILE__));
 if( !defined('MGS_ELEMENTOR_NAME') )            define('MGS_ELEMENTOR_NAME', 'MGS Elementor');
 if( !defined('MGS_ELEMENTOR_SLUG') )            define('MGS_ELEMENTOR_SLUG', 'MGS_Elementor');
-if( !defined('MGS_ELEMENTOR_PLUGIN_VERSION') )  define('MGS_ELEMENTOR_PLUGIN_VERSION', '0.0.4');
+if( !defined('MGS_ELEMENTOR_PLUGIN_VERSION') )  define('MGS_ELEMENTOR_PLUGIN_VERSION', '0.0.5');
 
 register_deactivation_hook(__FILE__, ['MGS_Elementor_AddOns', 'reset_defaul_settings']);
 
