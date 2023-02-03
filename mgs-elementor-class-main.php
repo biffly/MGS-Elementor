@@ -46,6 +46,15 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                 add_action('elementor/widgets/register', [$this, 'register_posts_widget']);
                 add_action('wp_enqueue_scripts', [$this, 'js_css_widget_posts']);
             }
+
+            //registro widget color fill animation css
+            if( get_option('mgs-elementor-addon-state-colorfillani-css')=='on' ){
+                add_action('elementor/widgets/register', [$this, 'register_color_fill_animation_css']);
+                add_action('wp_enqueue_scripts', [$this, 'js_css_color_fill_animation_css']);
+                add_action('elementor/editor/before_enqueue_scripts', [$this, 'js_css_color_fill_animation_css_admin']);
+                //remove limite de tamaño de imagenes
+                add_filter('big_image_size_threshold', '__return_false');
+            }
         }
 
         public function init(){
@@ -87,6 +96,17 @@ if( !class_exists('MGS_Elementor_AddOns') ){
             wp_enqueue_style('mgs_slider_css', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/css/slider.css');
             
             wp_enqueue_script('mgs_owl.carousel.min_js', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/js/owl.carousel.min.js', ['jquery'], '', true);
+        }
+
+        public function register_color_fill_animation_css($widgets_manager){
+            require_once('widget-color-fill-animation-css.php');
+            $widgets_manager->register( new \Elementor_MGS_Color_Fill_Animation_CSS() );
+        }
+        public function js_css_color_fill_animation_css(){
+            wp_enqueue_style('color_fill_animation_css', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/css/color_fill_animation_css.css');
+        }
+        public function js_css_color_fill_animation_css_admin(){
+            wp_enqueue_style('color_fill_animation_css_admin', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/css/color_fill_animation_css_admin.css');
         }
 
         public function mgs_elementor_admin_menu(){
@@ -152,9 +172,9 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                             }
 
                         }
-                        $class .= ( get_option('mgs-elementor-addon-state-'.$key)=='on' ) ? 'active' : '';
-                        
+                        $class .= ( get_option('mgs-elementor-addon-state-'.$key)=='on' ) ? 'active ' : '';
                         $class .= ( !self::$license_state ) ? 'disabled ' : '';
+                        $class .= ( isset($addon['config']) || isset($addon['run']) ) ? 'w_menu ' : '';
                     ?>
                     <div class="addon <?php echo $class?>" id="addon-mgs-elementor-addon-state-<?php echo $key?>">
                         <div class="overflow"></div>
@@ -176,16 +196,25 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                             </div>
                             <?php }?>
                         </div>
-                        <?php if( isset($addon['config']) ){?>
+                        <?php if( isset($addon['config']) || isset($addon['run']) ){?>
                         <div class="menu_options">
                             <div class="menu">
-                                <a href="#" class="addon_menu_config" data-target="addon-mgs-elementor-addon-state-<?php echo $key?>"><?php echo $addon['config']['ico'].$addon['config']['title']?></a>
+                                <?php if( isset($addon['config']) ){?>
+                                    <a href="#" class="addon_menu_config" data-target="mgs-elementor-addon-<?php echo $key?>-config" data-parent="addon-mgs-elementor-addon-state-<?php echo $key?>"><?php echo $addon['config']['ico'].$addon['config']['title']?></a>
+                                <?php }?>
+                                <?php if( isset($addon['run']) ){?>
+                                    <a href="#" class="addon_menu_config" data-target="mgs-elementor-addon-<?php echo $key?>-run" data-parent="addon-mgs-elementor-addon-state-<?php echo $key?>"><?php echo $addon['run']['ico'].$addon['run']['title']?></a>
+                                <?php }?>
                             </div>
                             <div class="cont">
-                                <?php call_user_func([$addon['config']['callback'], 'config'])?>
+                                <?php if( isset($addon['config']) ){?>
+                                    <div class="tab" id="mgs-elementor-addon-<?php echo $key?>-config"><?php call_user_func([$addon['config']['callback'], 'config'])?></div>
+                                <?php }?>
+                                <?php if( isset($addon['run']) ){?>
+                                    <div class="tab" id="mgs-elementor-addon-<?php echo $key?>-run"><?php call_user_func([$addon['config']['callback'], 'run'])?></div>
+                                <?php }?>
                             </div>
                         </div>
-
                         <?php }?>
                     </div>
                     <?php

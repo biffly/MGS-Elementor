@@ -1,0 +1,33 @@
+.mgs_color_fill_animation_css_wrapper{
+    position: relative;
+    width: fit-content;
+
+    .front-img{
+        position: absolute;
+        inset: 0;
+        background-repeat: no-repeat;
+        z-index: 2;
+
+        mask-position: 0 0;
+        mask-size: cover;
+    }
+
+    .reset-animation{
+        position: absolute;
+        z-index: 3;
+        top: 0; left: 0;
+        border: solid 1px black;
+        color: black;
+        background-color: gray;
+        border-radius: 5px;
+        &:hover{
+            background-color: black;
+            color: gray;
+        }
+    }
+}
+
+@keyframes mask_anim{
+    0%{mask-position:0% 0;}
+    to{mask-position:100% 0;}
+}

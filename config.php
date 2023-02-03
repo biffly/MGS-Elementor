@@ -1,6 +1,6 @@
 <?php
 global $mgs_elementor_config;
-
+ 
 $mgs_elementor_config = [
     'menu'      => [
         'config'    => [
@@ -16,6 +16,13 @@ $mgs_elementor_config = [
         ],
     ],
     'addons'    => [
+        'colorfillani-css'  => [
+            'title'     => 'Animaciones con mascaras CSS',
+            'desc'      => 'Permite crear animaciones con mascaras CSS, coloridad y super originales',
+            'required'  => __('* Requiere Elementor.', 'mgs_elementor'),
+            'ico'       => '<span class="material-symbols-outlined">view_carousel</span>',
+            'just_for'  => 'is_elementor'
+        ],
         'slider'            => [
             'title'     => 'Slider',
             'desc'      => __('Permite crear sliders o carrousels de forma rapida.', 'mgs_elementor'),
@@ -53,5 +60,30 @@ $mgs_elementor_config = [
             'required'  => __('* Requiere Elementor.', 'mgs_elementor'),
             'ico'       => '<span class="material-symbols-outlined">image</span>'
         ],
+        'dummy_content'     => [
+            'title'     => 'Generador de contenido',
+            'desc'      => __('Genera contenido ficticio para entornos de desarrollo. Utiliza la API de google para buscar imagenes de dominio publico y loripsum.net para la generación de los textos.', 'mgs_elementor'),
+            'ico'       => '<span class="material-symbols-outlined">shuffle</span>',
+            'run'       => [
+                'title'     => __('Ejecutar', 'mgs_elementor'),
+                'ico'       => '<span class="material-symbols-outlined">play_arrow</span>',
+                'callback'  => 'MGS_Dummy_Content'
+            ],
+            'config'    => [
+                'title'     => __('Opciones', 'mgs_elementor'),
+                'ico'       => '<span class="material-symbols-outlined">settings</span>',
+                'callback'  => 'MGS_Dummy_Content'
+            ],
+        ],
+        'login_replace'     => [
+            'title'     => __('Reemplazo de login', 'mgs_elementor'),
+            'desc'      => __('Permite reemplazar la pantalla de login a la administracion de wordpress para dar un aspecto de marca blanca.', 'mgs_elementor'),
+            'ico'       => '<span class="material-symbols-outlined">login</span>',
+            'config'    => [
+                'title'     => __('Opciones', 'mgs_elementor'),
+                'ico'       => '<span class="material-symbols-outlined">settings</span>',
+                'callback'  => 'MGS_LoginReplace'
+            ],
+        ]
     ]
 ];

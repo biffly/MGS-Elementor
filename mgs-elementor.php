@@ -43,6 +43,9 @@ require_once('config.php');
 //clases y funciones utiles
 require_once('mgs-compare.php');
 
+//Dummy Content
+require_once('mgs-dummy-content.php');
+
 // registro de widgets
 require_once('mgs-elementor-class-main.php');
 
@@ -51,6 +54,9 @@ require_once('mgs-conditional.php');
 
 //Image rotation
 require_once('mgs-image-rotation.php');
+
+//Login Replace
+require_once('mgs-login-replace.php');
 
 //css externa
 require_once('mgs-css-external.php');

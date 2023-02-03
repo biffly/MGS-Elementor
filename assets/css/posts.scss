@@ -32,3 +32,18 @@
         }
     }
 }
+
+.mgs_pagination{
+    &.default{
+        &.mgs_pagination_numbers{
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        &.mgs_pagination_prev_next{
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+    }
+}

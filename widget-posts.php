@@ -112,15 +112,22 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
     }
 
     private function render_pagination($settings, $query){
+        if( get_query_var('paged') ){
+            $paged = get_query_var('paged');
+        }elseif( get_query_var('page') ){
+            $paged = get_query_var('page');
+        }else{
+            $paged = 1; 
+        }
         $out = '';
         if( $settings['paginacion_tipo']=='numbers' ){
             $acortar = ( $settings['paginacion_acortar']=='yes' ) ? false : true;
             $paginacion_limite_pag = ($settings['paginacion_limite_pag'] - 1) / 2;
-            $out .= '<div class="mgs_pagination mgs_pagination_numbers '.$settings['paginacion_alignment'].'">';
+            $out .= '<div class="mgs_pagination mgs_pagination_numbers '.$settings['layout'].'">';
             $out .= paginate_links([
                 'base'         => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
                 'total'        => $query->max_num_pages,
-                'current'      => max(1, get_query_var('paged') ),
+                'current'      => max(1, $paged ),
                 'format'       => '?paged=%#%',
                 'show_all'     => $acortar,
                 'type'         => 'plain',
@@ -134,9 +141,34 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
             ]);
             $out .= '</div>';
         }
+
         if( $settings['paginacion_tipo']=='prev_next' ){
-            $out .= '
-                <div class="mgs_pagination mgs_pagination_prev_next '.$settings['paginacion_alignment'].'">
+            /*
+                $_paginate_links = paginate_links([
+                    'base'          => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
+                    'format'        => '?paged=%#%',
+                    'total'         => $query->max_num_pages,
+                    'current'       => max(1, $paged),
+                    'aria_current'  => 'page',
+                    'show_all'      => false,
+                    'end_size'      => 1,
+                    'mid_size'      => 1,
+                    'prev_next'     => true,
+                    'prev_text'     => sprintf('<i></i> %1$s',$settings['paginacion_label_ant']),
+                    'next_text'     => sprintf('%1$s <i></i>', $settings['paginacion_label_sig']),
+                    'type'          => 'plain',
+                    'add_args'      => '',
+                    'add_fragment'  => '',
+                    'before_page_number'    => '',
+                    'after_page_number'     => ''
+                ]);
+                if( $paged==1 ){
+                    $_paginate_links = '<span class="prev page-numbers disabled" href="#">'.sprintf('<i></i> %1$s',$settings['paginacion_label_ant']).'</span>'.$_paginate_links;
+                }elseif( $paged==$query->max_num_pages ){
+                    $_paginate_links = $_paginate_links.'<span class="prev page-numbers disabled" href="#">'.sprintf('%1$s <i></i>', $settings['paginacion_label_sig']).'</span>';
+                }
+                $out .= '
+                    <div class="mgs_pagination mgs_pagination_prev_next '.$settings['paginacion_alignment'].'">
                     '.paginate_links([
                         'base'         => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
                         'total'        => $query->max_num_pages,
@@ -151,23 +183,43 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
                         'next_text'    => sprintf('%1$s <i></i>', $settings['paginacion_label_sig']),
                         'add_args'     => false,
                         'add_fragment' => '',
-                    ]).'
-                </div>
-            ';
+                        ]).'
+                    </div>
+                    <div class="mgs_pagination mgs_pagination_prev_next '.$settings['paginacion_alignment'].'">
+                        '.$_paginate_links.'
+                    </div>
+                ';
+            */
+            $out .= '<div class="mgs_pagination mgs_pagination_prev_next '.$settings['layout'].'">';
+            if( $query->max_num_pages>1 ){
+                if( $paged==1 ){
+                    $out .= '<span class="prev page-numbers disabled" href="#">'.sprintf('<i></i> %1$s',$settings['paginacion_label_ant']).'</span>';
+                }elseif( $paged>1 ){
+                    $out .= '<a class="prev page-numbers" href="'.get_pagenum_link($paged-1).'">'.sprintf('<i></i> %1$s',$settings['paginacion_label_ant']).'</a>';
+                }
+                
+                if( $query->max_num_pages==$paged ){
+                    $out .= '<span class="next page-numbers disabled" href="#">'.sprintf('%1$s <i></i>', $settings['paginacion_label_sig']).'</span>';
+                }elseif( $paged<$query->max_num_pages ){
+                    $out .= '<a class="next page-numbers" href="'.get_pagenum_link($paged+1).'">'.sprintf('%1$s <i></i>', $settings['paginacion_label_sig']).'</a>';
+                }
+
+            }
+
+
+            $out .= '</div>';
         }
         return $out;
     }
 
     private function render_default_layout($id, $settings){
         $out = '';
-        $out .= '
-            <div id="mgs-posts-wrapper-'.$id.'" class="mgs-posts-wrapper layout-default">
-        ';
-
+        
         $query_args = $this->build_query($settings);
         $query = new WP_Query($query_args);
         if( $query->have_posts() ){
             //$out .= '<pre>'.print_r($query, true).'</pre>';
+            $out .= '<div id="mgs-posts-wrapper-'.$id.'" class="mgs-posts-wrapper layout-default">';
             while( $query->have_posts() ){
                 $query->the_post();
                 $post_id = get_the_ID();
@@ -188,22 +240,22 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
                     <div class="'.$class.'" id="mgs-posts-post-'.$post_id.'">
                         <a class="thumbnail" href="'.get_the_permalink($post_id).'" alt="'.get_the_title($post_id).'" style="'.$background.' padding-bottom:calc('.$settings['layout_default_image_proporcion'].' * 100%)"></a>
                         <div class="content">
+                            '.$this->default_layout_render_metas($settings, $post_id).'
                             '.$this->default_layout_render_title($settings, $post_id).'
                             '.$this->default_layout_render_excerpt($settings, $post_id).'
-                            '.$this->default_layout_render_metas($settings, $post_id).'
                             '.$this->default_layout_render_leer_mas($settings, $post_id).'
                         </div>
                     </div>
                 ';
             }
+
             
+            $out .= '</div>';       
+            $out .= $this->render_pagination($settings, $query);
+
         }else{
             $out .= 'No hay resultados';
         }        
-        $out .= '
-            </div>
-        ';       
-        $out .= $this->render_pagination($settings, $query);
 
         
        // $out .= '<pre>'.print_r($settings, true).'</pre>';
@@ -625,21 +677,6 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
             );
 
             $this->add_control(
-                'paginacion_limite_pag',
-                [
-                    'type'          => \Elementor\Controls_Manager::NUMBER,
-                    'label'         => esc_html__('Límite de páginas', 'mgs-theme-upgrade'),
-                    'placeholder'   => '5',
-                    'min'           => 1,
-                    'max'           => 100,
-                    'step'          => 1,
-                    'default'       => 5,
-                    'condition'     => [
-                        'paginacion_tipo'   => ['numbers']
-                    ]
-                ]
-            );
-            $this->add_control(
                 'paginacion_acortar',
                 [
                     'type'          => \Elementor\Controls_Manager::SWITCHER,
@@ -650,6 +687,22 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
 				    'default'       => 'no',
                     'condition'     => [
                         'paginacion_tipo'   => 'numbers'
+                    ]
+                ]
+            );
+            $this->add_control(
+                'paginacion_limite_pag',
+                [
+                    'type'          => \Elementor\Controls_Manager::NUMBER,
+                    'label'         => esc_html__('Límite de páginas', 'mgs-theme-upgrade'),
+                    'placeholder'   => '5',
+                    'min'           => 1,
+                    'max'           => 100,
+                    'step'          => 1,
+                    'default'       => 5,
+                    'condition'     => [
+                        'paginacion_tipo'   => ['numbers'],
+                        'paginacion_acortar'=> 'yes'
                     ]
                 ]
             );
@@ -689,7 +742,7 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
                     'type'          => \Elementor\Controls_Manager::CHOOSE,
                     'label'         => esc_html__('Alineacíon', 'mgs-theme-upgrade'),
                     'options'       => [
-                        'left'          => [
+                        'flex-start'    => [
                             'title' => esc_html__('Izquierda', 'mgs-theme-upgrade'),
                             'icon'  => 'eicon-text-align-left',
                         ],
@@ -697,7 +750,7 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
                             'title' => esc_html__('Centro', 'mgs-theme-upgrade'),
                             'icon'  => 'eicon-text-align-center',
                         ],
-                        'right'         => [
+                        'flex-end'      => [
                             'title' => esc_html__('Derecha', 'mgs-theme-upgrade'),
                             'icon'  => 'eicon-text-align-right',
                         ],
@@ -707,7 +760,7 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
                         'paginacion_tipo'   => ['numbers', 'prev_next']
                     ],
                     'selectors' => [
-                        '{{WRAPPER}} .mgs_pagination' => 'text-align: {{VALUE}}',
+                        '{{WRAPPER}} .mgs_pagination' => 'justify-content: {{VALUE}}',
                     ]
                 ]
             );
@@ -1321,8 +1374,17 @@ class Elementor_MGS_Posts_Widget extends \Elementor\Widget_Base{
             $arg['nopaging'] = true;
             $arg['posts_per_page'] = $settings['filtro_postcount'];
         }else{
-            $paged = ( get_query_var('paged') ) ? get_query_var('paged') : 1;
-            $arg['nopaging'] = false;
+
+            if( get_query_var('paged') ){
+                $paged = get_query_var('paged');
+            }elseif( get_query_var('page') ){
+                $paged = get_query_var('page');
+            }else{
+                $paged = 1; 
+            }
+
+            //$paged = ( get_query_var('paged') ) ? get_query_var('paged') : 1;
+            //$arg['nopaging'] = false;
             $arg['posts_per_page'] = $settings['filtro_postcount'];
             $arg['paged'] = $paged;
         }
