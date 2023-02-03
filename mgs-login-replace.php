@@ -1,4 +1,5 @@
 <?php
+
 if( !class_exists('MGS_LoginReplace') ){
     class MGS_LoginReplace{
 

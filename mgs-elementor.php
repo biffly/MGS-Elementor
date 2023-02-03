@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name: MGS Elementor
 Plugin URI: 

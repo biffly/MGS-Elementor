@@ -85,5 +85,6 @@ $mgs_elementor_config = [
                 'callback'  => 'MGS_LoginReplace'
             ],
         ]
+        
     ]
 ];

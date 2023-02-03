@@ -1,5 +1,6 @@
 console.log('%c '+'%cMGS Elementor '+'%c << WP Login Replace >> '+'%cActivo', 'background-image:url(https://www.marceloscenna.com.ar/wp-content/themes/mgs-theme/imgs/logo.svg);background-size:contain;background-position:left bottom;background-repeat:no-repeat;font-size:30px;padding-right:40px;', 'color:#ff9100;font-size:20px;', 'color:#ffffff;font-size:12px;','color:greenyellow;')
 
+
 jQuery.noConflict();
 jQuery(document).ready(function($){
     console.log(mgs_elementor_login_replace_vars)

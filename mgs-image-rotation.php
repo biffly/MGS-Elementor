@@ -1,4 +1,5 @@
 <?php
+
 if( !class_exists('MGS_ImageRotation') ){
     class MGS_ImageRotation{
         public $debug = true;

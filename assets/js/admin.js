@@ -1,4 +1,5 @@
 jQuery(document).ready(function(){
+    
     var custom_uploader;
 
     //revisa si alguna opcion dependent debe estar activa

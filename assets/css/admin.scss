@@ -1,8 +1,9 @@
 $transition-hover-dur: 400ms;
 
 @mixin hover-fx{
-    transition: all $transition-hover-dur ease;
+    transition: all $transition-hover-dur ease ;
 }
+
 
 #wpfooter{display: none;}
 #wpbody-content{padding-bottom: 0;}
@@ -337,7 +338,7 @@ $transition-hover-dur: 400ms;
     }
 }
 
-.mgs-notice{}
+.mgs-notice{line-height: 1.1em;}
 
 .mgs-switch{
     position: relative;

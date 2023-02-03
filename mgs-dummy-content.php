@@ -1,4 +1,5 @@
 <?php
+
 if( !class_exists('MGS_Dummy_Content') ){
     class MGS_Dummy_Content{
         public function __construct(){

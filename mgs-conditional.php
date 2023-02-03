@@ -1,4 +1,5 @@
 <?php
+
 if( !class_exists('MGS_Conditional') ){
     class MGS_Conditional{
         public $prefix = 'mgs_conditional_';

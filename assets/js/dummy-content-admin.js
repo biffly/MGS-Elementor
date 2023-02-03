@@ -1,4 +1,5 @@
 jQuery(document).ready(function(){
+    
     check_feactured_image();
     gapi.load('client');
 

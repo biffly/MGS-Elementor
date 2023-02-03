@@ -1,4 +1,5 @@
 <?php
+
 add_shortcode('mgs_excerpt', 'mgs_get_the_excerpt');
 
 class mgs_compare{
