@@ -326,7 +326,6 @@ $transition-hover-dur: 400ms;
         }
     }
     footer{
-        position: fixed;
         bottom: 0;
         width: 100%;
         background-color: var(--bg-panel);
@@ -590,6 +589,9 @@ input[type="password"].mgs_elementor_input{
     .fake_upload_area{
         padding: 3em 6em;
         background-color: var(--bg-panel);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
         border: dashed #333 4px;
         text-align: center;
         color: #333;

@@ -166,6 +166,7 @@ jQuery(document).ready(function(){
             //console.log(custom_uploader.state().get('selection').toJSON());
             attachment = custom_uploader.state().get('selection').first().toJSON();
             jQuery('#mgs_login_replace_custom_logo').val(attachment.url);
+            jQuery('#mgs_login_replace_custom_logo_upload').css('background-image', 'url('+attachment.url+')')
             SaveSettings('mgs_login_replace_custom_logo', attachment.url)
         });
 

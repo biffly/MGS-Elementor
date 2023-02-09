@@ -8,6 +8,7 @@ if( !class_exists('MGS_Elementor_AddOns') ){
         public $base_url;
         public $default_menu_item;
         public static $license_state = false;
+        public static $elementor_state = false;
 
         function __construct(){
             
@@ -17,6 +18,11 @@ if( !class_exists('MGS_Elementor_AddOns') ){
 
             //estado de la licencia
             self::$license_state = $this->LicenseState();
+
+            //if( is_plugin_active('elementor/elementor.php') ){
+            if( did_action('elementor/loaded') ){
+                self::$elementor_state = true;
+            }
             
             //determino el item default del menu y contenido
             global $mgs_elementor_config;
@@ -59,9 +65,11 @@ if( !class_exists('MGS_Elementor_AddOns') ){
         }
 
         public function init(){
-            if( !version_compare(ELEMENTOR_VERSION, MGS_ELEMENTOR_VERSION, '>=') ){
-                add_action('admin_notices', [$this, 'admin_notice_minimum_elementor_version']);
-                return;
+            if( self::$elementor_state ){
+                if( !version_compare(ELEMENTOR_VERSION, MGS_ELEMENTOR_VERSION, '>=') ){
+                    add_action('admin_notices', [$this, 'admin_notice_minimum_elementor_version']);
+                    return;
+                }
             }
             if( version_compare(PHP_VERSION, MGS_ELEMENTOR_PHP_VERSION, '<') ){
                 add_action('admin_notices', [$this, 'admin_notice_minimum_php_version']);

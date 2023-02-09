@@ -8,22 +8,24 @@ if( !class_exists('MGS_LoginReplace') ){
                 add_action('login_enqueue_scripts', function(){
                     wp_register_script('mgs_elementor_login_replace_js', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/js/mgs-login-replace.js', ['jquery']);
                     $_array_options = [
-                        'mgs_login_replace_hide_wp_logo'    => get_option('mgs_login_replace_hide_wp_logo'),
-                        'mgs_login_replace_custom_logo'    => get_option('mgs_login_replace_custom_logo'),
-                        'mgs_login_replace_custom_logo_link'    => get_site_url(),
-                        'mgs_login_replace_custom_logo_text'    => get_bloginfo('name'),
-                        'mgs_login_replace_customs_labels'    => get_option('mgs_login_replace_customs_labels'),
-                        'mgs_login_replace_customs_labels_user'    => get_option('mgs_login_replace_customs_labels_user'),
-                        'mgs_login_replace_customs_labels_pass'    => get_option('mgs_login_replace_customs_labels_pass'),
-                        'mgs_login_replace_hide_labels'    => get_option('mgs_login_replace_hide_labels'),
-                        'mgs_login_replace_hide_chech_rememberme'    => get_option('mgs_login_replace_hide_chech_rememberme'),
-                        'mgs_login_replace_hide_reset_pass'    => get_option('mgs_login_replace_hide_reset_pass'),
-                        'mgs_login_replace_hide_back_site'    => get_option('mgs_login_replace_hide_back_site'),
-                        'mgs_login_replace_hide_lang_change'    => get_option('mgs_login_replace_hide_lang_change')
+                        'mgs_login_replace_hide_wp_logo'            => get_option('mgs_login_replace_hide_wp_logo'),
+                        'mgs_login_replace_custom_logo'             => get_option('mgs_login_replace_custom_logo'),
+                        'mgs_login_replace_custom_logo_link'        => get_site_url(),
+                        'mgs_login_replace_custom_logo_text'        => get_bloginfo('name'),
+                        'mgs_login_replace_custom_logo_desc'        => get_bloginfo('description'),
+                        'mgs_login_replace_customs_labels'          => get_option('mgs_login_replace_customs_labels'),
+                        'mgs_login_replace_customs_labels_user'     => get_option('mgs_login_replace_customs_labels_user'),
+                        'mgs_login_replace_customs_labels_pass'     => get_option('mgs_login_replace_customs_labels_pass'),
+                        'mgs_login_replace_hide_labels'             => get_option('mgs_login_replace_hide_labels'),
+                        'mgs_login_replace_hide_chech_rememberme'   => get_option('mgs_login_replace_hide_chech_rememberme'),
+                        'mgs_login_replace_hide_reset_pass'         => get_option('mgs_login_replace_hide_reset_pass'),
+                        'mgs_login_replace_hide_back_site'          => get_option('mgs_login_replace_hide_back_site'),
+                        'mgs_login_replace_hide_lang_change'        => get_option('mgs_login_replace_hide_lang_change'),
                     ];
                     wp_localize_script('mgs_elementor_login_replace_js', 'mgs_elementor_login_replace_vars', $_array_options);
                     wp_enqueue_script('mgs_elementor_login_replace_js');
 
+                    wp_enqueue_style('mgs_login_replace_css', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/css/mgs_login_replace.css');
                 });
             }
         }
@@ -48,8 +50,8 @@ if( !class_exists('MGS_LoginReplace') ){
                     <div class="mgs-elementor-fake-form mt-0 mb-0">
                         <div class="mgs-elementor-field-wrapper mgs_login_replace_custom_logo_wrapper hidden">
                             <p class="desc"><?php _e('Si lo desea puede utilizar un logotipo personalizado', 'mgs_elementor')?></p>
-                            <button class="fake_upload_area" id="mgs_login_replace_custom_logo_upload">Seleccione una imagen</button>
-                            <input id="mgs_login_replace_custom_logo" type="text" name="mgs_login_replace_custom_logo" value="<?php echo get_option('mgs_login_replace_custom_logo')?>" /> 
+                            <button class="fake_upload_area" id="mgs_login_replace_custom_logo_upload" style="background-image:url(<?php echo get_option('mgs_login_replace_custom_logo')?>);">Seleccione una imagen</button>
+                            <input id="mgs_login_replace_custom_logo" type="hidden" name="mgs_login_replace_custom_logo" value="<?php echo get_option('mgs_login_replace_custom_logo')?>" /> 
                         </div>
                     </div>
 
@@ -103,7 +105,7 @@ if( !class_exists('MGS_LoginReplace') ){
                     <div class="mgs-elementor-fake-form mt-0 mb-0">
                         <div class="mgs-elementor-field-wrapper check_options">
                             <label for="mgs_login_replace_hide_reset_pass">
-                                <?php _e('Ocultar la opción "¿Olvidaste tu contraseña?"', 'mgs_elementor')?>
+                                <?php _e('Ocultar la opción "¿Olvidaste tu contraseña?" y/o "Registrarse"', 'mgs_elementor')?>
                             </label>
                             <div class="mgs-switch">
                                 <input type="checkbox" name="mgs_login_replace_hide_reset_pass" id="mgs_login_replace_hide_reset_pass" data-key="mgs_login_replace_hide_reset_pass" <?php echo ( get_option('mgs_login_replace_hide_reset_pass')=='on' ) ? 'checked' : ''?>>

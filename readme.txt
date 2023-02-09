@@ -3,7 +3,7 @@ Donate link: https://marceloscenna.com.ar/
 Tags: Elementor
 Requires at least: 6.0
 Tested up to: 6.1.1
-Stable tag: 0.0.6
+Stable tag: 0.0.7
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -17,6 +17,7 @@ Este plugin agrega varias opciones a Elementor, asi tambien funcionalidades extr
 = Widgetes Elementor =
 * **Slider** Permite crear sliders o carrousels de forma rapida.
 * **Visualizar posts** Cree plantillas de visualización de entradas segun su gusto y placer, luego configure la cantidad, orden y dispocicion. utilice las plantillas de elementor.
+* **Animaciones con mascaras CSS** Crea animaciones CSS usando mascaras.
 
 = Agregados/Mejoras al Container de Elementor (flexbox) =
 * **Conditional** Agrega la opcion de esconder/mostrar contenedores segun ciertas condiciones.
@@ -24,6 +25,8 @@ Este plugin agrega varias opciones a Elementor, asi tambien funcionalidades extr
 
 = Independientes de Elementor =
 * **Carga CSS adicional** Carga un CSS personalizado que no se vera afectado por las actualizaciones de su tema.
+* **Reemplazo del Login** Reemplaza el login default de WP por uno personalizado.
+* **Dummy content generator** Genera contenido dummy para entradas, utiliza Google Console Search para buscar imagenes y colocarlas como imagenes destacadas.
 
 == Frequently Asked Questions ==
 
@@ -31,8 +34,11 @@ Este plugin agrega varias opciones a Elementor, asi tambien funcionalidades extr
 
 == Changelog ==
 
+= 0.0.7 =
+* Actualización Login Replace (alpha)
+
 = 0.0.6 =
-* Agregado de widget Color fill animation
+* Agregado de Animaciones con mascaras CSS
 * Agregado Dummy content generator
 * Agregado Login Replace (beta)
 

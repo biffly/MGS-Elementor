@@ -52,13 +52,15 @@ $mgs_elementor_config = [
             'title'     => 'Visualizar posts',
             'desc'      => __('Cree plantillas de visualización de entradas segun su gusto y placer, luego configure la cantidad, orden y dispocicion. utilice las plantillas de elementor.', 'mgs_elementor'),
             'required'  => __('* Requiere Elementor.', 'mgs_elementor'),
-            'ico'       => '<span class="material-symbols-outlined">view_list</span>'
+            'ico'       => '<span class="material-symbols-outlined">view_list</span>',
+            'just_for'  => 'is_elementor'
         ],
         'image_rotation'    => [
             'title'     => 'Rotador de imagenes aleatorias',
             'desc'      => __('Agrege imagenes aletorias, como una imagen o como un fondo.', 'mgs_elementor'),
             'required'  => __('* Requiere Elementor.', 'mgs_elementor'),
-            'ico'       => '<span class="material-symbols-outlined">image</span>'
+            'ico'       => '<span class="material-symbols-outlined">image</span>',
+            'just_for'  => 'is_elementor'
         ],
         'dummy_content'     => [
             'title'     => 'Generador de contenido',
