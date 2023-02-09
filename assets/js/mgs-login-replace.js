@@ -21,6 +21,7 @@ jQuery(document).ready(function($){
     $('body').prepend('<div id="mgs-login-replace-logo-wrapper"><div class="inner"></div></div>');
 
     $('.language-switcher').appendTo('#login');
+    $('.wpml-login-ls').appendTo('#login');
     
     $('#login h1').attr('id', 'mgs-login-replace-logo');
     $('#mgs-login-replace-logo').appendTo('#mgs-login-replace-logo-wrapper .inner')
@@ -83,9 +84,10 @@ jQuery(document).ready(function($){
     if( mgs_elementor_login_replace_vars.mgs_login_replace_hide_back_site=='on' ){
         $('p#backtoblog').css('display', 'none');
     }
-    //regresar al sitio
+    //Cambio de idioma
     if( mgs_elementor_login_replace_vars.mgs_login_replace_hide_lang_change=='on' ){
         $('.language-switcher').css('display', 'none');
+        $('.wpml-login-ls').css('display', 'none');
     }
 
     /********************************************************** */

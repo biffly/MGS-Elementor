@@ -3,7 +3,7 @@ Donate link: https://marceloscenna.com.ar/
 Tags: Elementor
 Requires at least: 6.0
 Tested up to: 6.1.1
-Stable tag: 0.0.7
+Stable tag: 0.0.8
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -33,6 +33,9 @@ Este plugin agrega varias opciones a Elementor, asi tambien funcionalidades extr
 == Screenshots ==
 
 == Changelog ==
+
+= 0.0.8 =
+* Fix Login Replace language switcher compatililidad con WPML
 
 = 0.0.7 =
 * Actualización Login Replace (alpha)

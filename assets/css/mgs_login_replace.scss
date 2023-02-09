@@ -263,14 +263,14 @@ h3{font-size: 18px;}
                 }
             }
 
-            .language-switcher{
+            .language-switcher, .wpml-login-ls{
                 margin: 0;
                 padding: 0;
                 text-align: left;
                 position: absolute;
                 top: 1em;
                 right: 1em;
-                #language-switcher{
+                #language-switcher, #wpml-login-ls-form{
                     margin: 0;
                     display: flex;
                     gap: 4px;
