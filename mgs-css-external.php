@@ -1,5 +1,4 @@
 <?php
-
 if( !class_exists('MGS_Elementor_External_CSS') ){
     class MGS_Elementor_External_CSS{
         public function __construct(){
@@ -92,3 +91,4 @@ if( !class_exists('MGS_Elementor_External_CSS') ){
         }
     }
 }
+new MGS_Elementor_External_CSS();

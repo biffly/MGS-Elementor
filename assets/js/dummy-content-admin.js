@@ -180,4 +180,41 @@ jQuery(document).ready(function(){
             jQuery('.mgs_dummy_content_img_search_wrapper').fadeOut();
         }
     }
+
+    jQuery('#cmd_mgs_dummy_content_generate_ajax').on('click', function(e){
+        //e.preventDefault();
+
+        var search = ( jQuery('#mgs_dummy_content_img_search_ajax').val()!='' ) ? jQuery('#mgs_dummy_content_img_search_ajax').val() : 'Natural forest';
+        var postid = jQuery('#mgs_dummy_content_img_search_ajax_postid').val();
+
+        jQuery('.mgs_elementor_dummy_content_run .mgs-elementor-field-wrapper input').prop('disabled', 'disabled')
+        jQuery('#cmd_mgs_dummy_content_generate_ajax').prop('disabled', 'disabled').html('<span class="material-symbols-outlined">hourglass_empty</span>').addClass('spined')
+        jQuery.ajax({
+            type		: "post",
+            url			: mgs_elementor_ajax.ajaxurl,
+            data		: {
+                action		: 'mgs_dummy_content_generate_only_img',
+                search      : search,
+                postid      : postid,
+            }
+        }).done(function(data){
+            response = jQuery.parseJSON(data)
+            console.log(response)
+            jQuery('.mgs_elementor_dummy_content_run .mgs-elementor-field-wrapper input').prop('disabled', '')
+            jQuery('#cmd_mgs_dummy_content_generate_ajax').prop('disabled', '').html('<span class="material-symbols-outlined">play_arrow</span>').removeClass('spined')
+            //jQuery('.mgs_elementor_dummy_image_ajax_loaded img').attr('src', response.url);
+            if( response['status']['code']=='200' ){
+                jQuery('.mgs_elementor_dummy_image_ajax_loaded h2').html('Imagen cargada con exito.');
+                jQuery('.mgs_elementor_dummy_image_ajax_loaded p').html('Si lo desea puede buscar una nueva, esto no elimina la imagen de la libreria de medios.');
+                jQuery('.mgs_elementor_dummy_image_ajax_loaded img').attr('src', response.url).css('max-width', '100%');
+            }
+        });
+    })
+
+    jQuery('.x_thickbox').on('click', function(e){
+        e.preventDefault()
+        tb_show("Buscar imagen","#TB_inline?width=400&height=600&inlineId=mgs_dummy_content_generate_image_ajax",null);
+        jQuery('#mgs_dummy_content_img_search_ajax_postid').val( jQuery(this).data('postid') )
+    })
+
 })

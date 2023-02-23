@@ -42,6 +42,9 @@ body{
     display: flex;
     align-items: center;
 
+    --ani-delay: 500ms;
+    --ani-speed: 2s;
+
     &.dark-mode{
         --bg-login-area: #2c2c2c;
         --bg-logo-area: #3e3e3e;
@@ -81,6 +84,9 @@ h3{font-size: 18px;}
     .inner{
         padding: 3vh 3vw;
         h1{
+            opacity: 0;
+            transform: translateY(-4em);
+            animation: fadeInDown var(--ani-speed) ease var(--ani-delay) forwards;
             a{
                 &.mgs-login-replace-custom{
                     margin: 0 auto;
@@ -94,8 +100,13 @@ h3{font-size: 18px;}
                 }
             }
         }
+        h2, h3{
+            opacity: 0;
+            animation: fadeIn var(--ani-speed) ease calc(var(--ani-delay) + var(--ani-speed)) forwards;
+        }
     }
     #backtoblog{
+        opacity: 0;
         position: absolute;
         top: 1em;
         left: 1em;
@@ -109,19 +120,23 @@ h3{font-size: 18px;}
                 outline: none;
             }
         }
+        animation: fadeIn var(--ani-speed) ease var(--ani-delay) forwards;
     }
     #theme_switch{
+        opacity: 0;
         position: absolute;
         bottom: 1em;
         left: 1em;
         margin: 0;
         padding: 0;
+        animation: fadeIn var(--ani-speed) ease var(--ani-delay) forwards;
     }
 }
 #mgs-login-replace-login-wrapper{
     width: 67vw;
     background-color: var(--bg-login-area);   
     .inner{
+        opacity: 0;
         padding: 3vh 6vw;
         #login{
             width: unset;
@@ -306,7 +321,22 @@ h3{font-size: 18px;}
                     }
                 }
             }
+
+            .privacy-policy-page-link{
+                position: absolute;
+                bottom: 1em;
+                right: 1em;
+                text-align: right;
+                margin: 0;
+                width: auto;
+                a.privacy-policy-link{
+                    font-size: 14px;
+                    color: var(--color-text-login);
+                    text-decoration: none;
+                }
+            }
         }
+        animation: fadeIn var(--ani-speed) ease var(--ani-delay) forwards;
     } 
 }
 
@@ -363,6 +393,13 @@ h3{font-size: 18px;}
             background-color: var(--bg-logo-area);
         }
     }
+}
+
+@keyframes fadeIn{
+    to{opacity: 1;}
+}
+@keyframes fadeInDown{
+    to{opacity: 1; transform: translateY(0);}
 }
 /*
 #login{

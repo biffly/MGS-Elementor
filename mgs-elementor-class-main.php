@@ -9,9 +9,11 @@ if( !class_exists('MGS_Elementor_AddOns') ){
         public $default_menu_item;
         public static $license_state = false;
         public static $elementor_state = false;
+        public static $post_rate_tbl;
+        public static $post_rate_comments_tbl;
 
         function __construct(){
-            
+            global $wpdb;
 
             $this->slug_admin = 'mgs_elementor_admin';
             $this->base_url = admin_url('options-general.php?page='.$this->slug_admin);
@@ -41,7 +43,25 @@ if( !class_exists('MGS_Elementor_AddOns') ){
             add_action('wp_ajax_mgs_elementor_registro_licensia', [$this, 'mgs_elementor_registro_licensia_callback']);
 
 
-            
+            //registro widget post-rate
+            if( get_option('mgs-elementor-addon-state-post-rate')=='on' ){
+                self::$post_rate_tbl = $wpdb->prefix."mgs_post_rate";
+                self::$post_rate_comments_tbl = $wpdb->prefix."mgs_post_rate_comments";
+                //verifico si existe las tablas
+                if( !$this->is_post_rate_tables_exist() ){
+                    $this->create_table_post_rates();
+                }
+                add_action('elementor/widgets/register', [$this, 'register_post_rate']);
+                add_action('wp_enqueue_scripts', [$this, 'js_css_post_rate']);
+                add_action('wp_ajax_mgs_post_rating_set', [$this, 'mgs_post_rating_set']);
+                add_action('wp_ajax_nopriv_mgs_post_rating_set', [$this,'mgs_post_rating_set']);
+                add_action('wp_ajax_mgs_post_rating_set_comment', [$this, 'mgs_post_rating_set_comment']);
+                add_action('wp_ajax_nopriv_mgs_post_rating_set_comment', [$this,'mgs_post_rating_set_comment']);
+                if( is_admin() ){
+                    require_once('mgs-post-rate-admin.php');
+                }
+            }
+
             //registro widget slider
             if( get_option('mgs-elementor-addon-state-slider')=='on' ){
                 add_action('elementor/widgets/register', [$this, 'register_slider_widget']);
@@ -86,6 +106,137 @@ if( !class_exists('MGS_Elementor_AddOns') ){
             //carga todos los complementos que no son widgets nuevos
         }
 
+        public function register_post_rate($widgets_manager){
+            require_once('widget-post-rate.php');
+            $widgets_manager->register( new \Elementor_MGS_Post_Rate_Widget() );
+        }
+        public function js_css_post_rate(){
+            $vars = [];
+            $vars['ajaxurl'] = admin_url('admin-ajax.php');
+
+            wp_enqueue_style('mgs_elementor_post_rate_css', plugins_url('assets/css/post-rate.css', __FILE__));
+
+            wp_enqueue_script('mgs_elementor_post_rate_js_cookies', plugins_url('assets/js/js.cookie.min.js', __FILE__), ['jquery']);
+            wp_enqueue_script('mgs_elementor_post_rate_js_validate', plugins_url('assets/js/jquery.validate.min.js', __FILE__), ['jquery']);
+            wp_enqueue_script('mgs_elementor_post_rate_main', plugins_url('assets/js/post-rate.js', __FILE__), ['jquery', 'mgs_elementor_post_rate_js_validate']);
+            wp_localize_script('mgs_elementor_post_rate_main', 'mgs_post_ratings_vars', $vars);
+        }
+        public function mgs_post_rating_set(){
+            $current_value = get_post_meta($_POST['post'], 'mgs_post_rating_value', true);
+            $current_veces = get_post_meta($_POST['post'], 'mgs_post_rating_veces', true);
+
+            if( $current_value=='' ) $current_value = 0;
+            if( $current_veces=='' ) $current_veces = 0;
+
+            $new_value = $current_value + $_POST['value'];
+            $new_veces = $current_veces + 1;
+
+            update_post_meta($_POST['post'], 'mgs_post_rating_value', $new_value);
+            update_post_meta($_POST['post'], 'mgs_post_rating_veces', $new_veces);
+
+            //guardo submit en BBDD
+            global $wpdb;
+            $current_datetime_gmt = current_time('mysql', true);
+		    $current_datetime = get_date_from_gmt($current_datetime_gmt);
+            $wpdb->insert(
+                self::$post_rate_tbl,
+                [
+                    'post_id'           => $_POST['post'],
+                    'submit_id'         => $_POST['submit_id'],
+                    'post_rate'         => $_POST['value'],
+                    'created_at_gmt'    => $current_datetime_gmt,
+			        'created_at'        => $current_datetime,
+                ]
+            );
+            echo json_encode([
+                'value'     => $new_value,
+                'veces'     => $new_veces,
+                'voted'     => $_POST['value'],
+                'submit_id' => $_POST['submit_id'],
+                'bd_id'     => $wpdb->insert_id,
+                'state'     => 'ok'
+            ]);
+            die();
+        }
+        public function mgs_post_rating_set_comment(){
+            global $wpdb;
+            parse_str($_POST['post'], $post);
+            
+            //busco valoracion
+            $t1 = self::$post_rate_tbl;
+            $t2 = self::$post_rate_comments_tbl;
+            $val_id = $wpdb->get_var("SELECT id FROM $t1 WHERE submit_id='".$post['submit_id']."'");
+            if( $val_id ){
+                //busco en tabla comments
+                $comment_id = $wpdb->get_var("SELECT id FROM $t2 WHERE submit_id='".$post['submit_id']."'");
+                if( $comment_id ){
+                    echo json_encode([
+                        'state'     => 'already'
+                    ]);
+                    die();
+                }else{
+                    //al parecer todo esta ok, cargo comment
+                    foreach( $post['form_fields'] as $k=>$v ){
+                        $wpdb->insert(
+                            $t2,
+                            [
+                                'submit_id' => $post['submit_id'],
+                                'key'       => $k,
+                                'value'     => $v
+                            ]
+                        );
+                    }
+                    echo json_encode([
+                        'state'     => 'ok',
+                        'post'      => $post
+                    ]);
+                    die();
+                }
+            }else{
+                echo json_encode([
+                    'state'     => 'no_post_rate'
+                ]);
+                die();
+            }
+            die();
+        }
+        public function is_post_rate_tables_exist(){
+            global $wpdb;
+            $t1 = self::$post_rate_tbl;
+            $t2 = self::$post_rate_comments_tbl;
+            if( $wpdb->get_var("SHOW TABLES LIKE '$t1'")!=$t1 || $wpdb->get_var("SHOW TABLES LIKE '$t2'")!=$t2 ){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        public function create_table_post_rates(){
+            global $wpdb;
+            $charset_collate = $wpdb->get_charset_collate();
+            $t1 = self::$post_rate_tbl;
+            $t2 = self::$post_rate_comments_tbl;
+            $e_post_rate_tbl = "CREATE TABLE $t1 (
+                id bigint(20) unsigned auto_increment primary key,
+                post_id bigint(20) unsigned not null,
+                submit_id varchar(500) not null,
+                post_rate varchar(20) not null,
+                created_at_gmt datetime not null,
+                updated_at_gmt datetime not null,
+                created_at datetime not null,
+                updated_at datetime not null
+            ) {$charset_collate};";
+
+            $e_post_rate_comments_tbl = "CREATE TABLE $t2 (
+                id bigint(20) unsigned auto_increment primary key,
+                submit_id varchar(500) not null,
+                `key` varchar(60) null,
+                value longtext null
+            ) {$charset_collate};";
+
+            require_once ABSPATH.'wp-admin/includes/upgrade.php';
+            dbDelta($e_post_rate_tbl.$e_post_rate_comments_tbl);
+        }
+
         public function register_posts_widget($widgets_manager){
             require_once('widget-posts.php');
             $widgets_manager->register( new \Elementor_MGS_Posts_Widget() );
@@ -124,7 +275,7 @@ if( !class_exists('MGS_Elementor_AddOns') ){
 				'MGS Elementor',
 				'manage_options',
 				$this->slug_admin,
-				[$this, 'page']
+				[$this, 'page_v2']
 			);
         }
 
@@ -159,6 +310,132 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                         <p>&copy; Marcelo Gabriel Scenna - <?php echo date('Y')?></p>
                     </footer>
                 </div>
+            <?php
+        }
+
+        public function page_v2(){
+            global $mgs_elementor_config;
+            ?>
+            <div class="mgs-elementor-admin-v2">
+                <header class="mgs-elementor-admin-head">
+                    <div class="bar-left">
+                        <div class="logo">
+                            <img src="<?php echo MGS_ELEMENTOR_PLUGIN_DIR_URL?>/assets/imgs/logo-mgs.svg" alt="Marcelo Scenna">
+                            <h1><?php echo MGS_ELEMENTOR_NAME?></h1>
+                        </div>
+                        <div class="menu">
+                            <?php $this->_menu()?>
+                        </div>
+                    </div>
+                    <div class="bar-right">
+                        <div class="info">
+                            <div class="ver"><?php echo MGS_ELEMENTOR_PLUGIN_VERSION?></div>
+                            <div class="estado">Demo</div>
+                        </div>
+                        <div class="close">
+                            <a href="<?php echo get_dashboard_url()?>" title="<?php _e('Cerrar', 'mgs_elementor')?>"><span class="material-symbols-outlined">close</span></a>
+                        </div>
+                    </div>
+                </header>
+                <content>
+                    <?php
+                        if( !isset($_GET['sec']) ){//defaul
+                            call_user_func( [$this, $mgs_elementor_config['menu'][$this->default_menu_item]['callback']] );
+                        }else{ 
+                            //otras secciones
+                            if( isset($_GET['addon']) && get_option('mgs-elementor-addon-state-'.$_GET['addon'])=='on' ){
+                                if( isset($mgs_elementor_config['addons'][$_GET['addon']]['menu'][$_GET['sec']]['class']) ){
+
+                                    call_user_func([
+                                        $mgs_elementor_config['addons'][$_GET['addon']]['menu'][$_GET['sec']]['class'],
+                                        $mgs_elementor_config['addons'][$_GET['addon']]['menu'][$_GET['sec']]['callback']
+                                    ]);
+                                }else{
+                                    call_user_func( [$this, $mgs_elementor_config['menu'][$_GET['sec']]['callback']] );
+                                }
+                            }else{
+                                call_user_func( [$this, $mgs_elementor_config['menu'][$_GET['sec']]['callback']] );
+                            }
+                        }
+                    ?>
+                </content>
+                <footer>
+                    <p>&copy; Marcelo Gabriel Scenna - <?php echo date('Y')?></p>
+                </footer>
+            </div>
+            <?php
+        }
+        private function _config_v2(){
+            global $mgs_elementor_config;
+            ?>
+            <div class="addons-container">
+                <div class="inner">
+                    <?php
+                        foreach( $mgs_elementor_config['addons'] as $key=>$addon ){
+                            $class = '';
+                            $show_switch = true;
+                            if( isset($addon['just_for']) && $addon['just_for']!='' ){
+                                if( call_user_func([$this, $addon['just_for']]) ){
+                                    $class .= $addon['just_for'].' ';
+                                }else{
+                                    $class .= $addon['just_for'].'_not not_compatible ';
+                                    $show_switch = false;
+                                }
+
+                            }
+                            $class .= ( get_option('mgs-elementor-addon-state-'.$key)=='on' ) ? 'active ' : '';
+                            $class .= ( !self::$license_state ) ? 'disabled ' : '';
+                            $class .= ( isset($addon['config']) || isset($addon['run']) ) ? 'w_menu ' : '';
+                    ?>
+                            <div class="addon <?php echo $class?>" id="addon-mgs-elementor-addon-state-<?php echo $key?>">
+                                <div class="overflow"></div>
+                                <div class="acc">
+                                    <div class="mgs-switch">
+                                        <input type="checkbox" name="mgs-elementor-addon-state-<?php echo $key?>" id="mgs-elementor-addon-state-<?php echo $key?>" data-key="mgs-elementor-addon-state-<?php echo $key?>" <?php echo ( get_option('mgs-elementor-addon-state-'.$key)=='on' ) ? 'checked' : ''?> <?php echo ( !$show_switch ) ? 'disabled' : '';?>>
+                                        <label for="mgs-elementor-addon-state-<?php echo $key?>"></label>
+                                        <span class="alert" id="mgs-elementor-addon-state-<?php echo $key?>-alert"></span>
+                                    </div>
+                                </div>
+                                <div class="cont">
+                                    <div class="title">
+                                        <div class="ico"><?php echo $addon['ico']?></div>
+                                        <div class="text"><?php echo $addon['title']?></div>
+                                    </div>
+                                    <div class="desc"><?php echo $addon['desc']?></div>
+                                    <div class="required"><?php echo $addon['required']?></div>
+                                </div>
+                                <?php if( isset($addon['config']) || isset($addon['run']) ){?>
+                                <div class="menu_options">
+                                    <div class="menu">
+                                    <?php if( isset($addon['config']) ){?>
+                                        <a href="#" class="addon_menu_config_v2" data-target="mgs-elementor-addon-<?php echo $key?>-config" data-parent="addon-mgs-elementor-addon-state-<?php echo $key?>" title="<?php echo $addon['config']['title']?>"><?php echo $addon['config']['ico']?></a>
+                                    <?php }?>
+                                    <?php if( isset($addon['run']) ){?>
+                                        <a href="#" class="addon_menu_config_v2" data-target="mgs-elementor-addon-<?php echo $key?>-run" data-parent="addon-mgs-elementor-addon-state-<?php echo $key?>" title="<?php echo $addon['run']['title']?>"><?php echo $addon['run']['ico']?></a>
+                                    <?php }?>
+                                    </div>
+                                </div>
+                                <?php }?>
+                            </div>
+                            <?php if( isset($addon['config']) ){?>
+                            <div class="addon-modal addon-config" id="mgs-elementor-addon-<?php echo $key?>-config">
+                                <div class="inner">
+                                    <?php call_user_func([$addon['config']['callback'], 'config'])?>
+                                </div>
+                            </div>
+                            <?php }?>
+                            <?php if( isset($addon['run']) ){?>
+                            <div class="addon-modal addon-run" id="mgs-elementor-addon-<?php echo $key?>-run">
+                                <div class="inner">
+                                    <?php call_user_func([$addon['config']['callback'], 'run'])?>
+                                </div>
+                            </div>
+                            <?php }?>
+                    <?php
+                        }
+                    ?>
+                </div>
+            </div>
             <?php
         }
 
@@ -276,6 +553,7 @@ if( !class_exists('MGS_Elementor_AddOns') ){
         private function _menu(){
             global $mgs_elementor_config;
             $out = '<ul>';
+            //menus por default
             foreach($mgs_elementor_config['menu'] as $key=>$item ){
                 if( isset($item['default']) && $item['default'] ){
                     $url = $this->base_url;
@@ -293,11 +571,29 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                     </li>
                 ';
             }
+            //menus de AddOns
+            foreach( $mgs_elementor_config['addons'] as $id_addon=>$addon ){
+                if( isset($addon['menu']) && get_option('mgs-elementor-addon-state-'.$id_addon)=='on' ){
+                    foreach( $addon['menu'] as $key=>$item ){
+                        $url = $this->base_url.'&sec='.$key.'&addon='.$id_addon;
+                        $class = ( isset($_GET['sec']) && $_GET['sec']==$key ) ? 'active' : '';
+                        $out .= '
+                            <li>
+                                <a href="'.$url.'" class="'.$class.'">
+                                    <div class="ico"><span class="material-symbols-outlined">'.$item['ico'].'</span></div>
+                                    <div class="label">'.$item['label'].'</div>
+                                </a>
+                            </li>
+                        ';
+                    }
+                }
+            }
+
             $out .= '</ul>';
             echo $out;
         }
         public function mgs_elementor_admin_enqueue_scripts($hook){
-            if( $hook=='settings_page_'.$this->slug_admin ){
+            //if( $hook=='settings_page_'.$this->slug_admin ){
                 wp_enqueue_script('jquery');
                 wp_register_script('mgs-elementor-admin-js', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/js/admin.js', ['jquery']);
    				wp_localize_script('mgs-elementor-admin-js', 'mgs_elementor_ajax', [
@@ -312,8 +608,9 @@ if( !class_exists('MGS_Elementor_AddOns') ){
    				wp_enqueue_script('mgs-elementor-admin-js');
 
                 wp_enqueue_style('mgs-elementor-admin-css', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/css/admin.css');
+                wp_enqueue_style('mgs-elementor-admin_v2-css', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/css/admin_v2.css');
                 wp_enqueue_style('mgs-elementor-material-icons-css', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0');
-            }
+            //}
 
         }
 
@@ -321,7 +618,6 @@ if( !class_exists('MGS_Elementor_AddOns') ){
             echo update_option($_POST['key'], $_POST['value']);
             die();
         }
-
 
         public function admin_notice_minimum_elementor_version() {
             deactivate_plugins(plugin_basename(MGS_ELEMENTOR_BASENAME));

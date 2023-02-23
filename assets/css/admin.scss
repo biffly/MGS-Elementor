@@ -8,7 +8,7 @@ $transition-hover-dur: 400ms;
 #wpfooter{display: none;}
 #wpbody-content{padding-bottom: 0;}
 
-.mgs-elementor-admin{
+:root{
     --bg: #fbfbfb;
     --bg-panel: #ebebeb;
     --panel-border: #dfdede;
@@ -25,6 +25,10 @@ $transition-hover-dur: 400ms;
     --cmd-h-bg: #215179;
 
     --header-height: 80px;
+}
+
+.mgs-elementor-admin{
+    
     
     margin-left: -20px;
     background-color: var(--bg);
@@ -602,6 +606,8 @@ input[type="password"].mgs_elementor_input{
     &.mt-1{margin-top: 1em;}
     &.fw{flex-basis: 100%;}
     &.hidden{display: none;}
+    &.flex-80{flex: 80%;}
+    &.flex-20{flex: 20%;}
 }
 
 

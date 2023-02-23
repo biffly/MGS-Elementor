@@ -57,6 +57,8 @@ jQuery(document).ready(function(){
                         jQuery(this).removeClass('alert-ok').html('');
                     });
                 }, 5000);
+                
+                window.location.reload();
             }else{
                 jQuery('#'+setting_key).prop('checked', !cheched);
                 jQuery('#'+setting_key+'-alert').html(mgs_elementor_ajax.setting_KO).addClass('alert-ko').fadeIn();
@@ -124,6 +126,22 @@ jQuery(document).ready(function(){
                 jQuery(this).addClass('active')
             }
         //}
+    })
+
+    jQuery('.addon_menu_config_v2').on('click', function(e){
+        e.preventDefault();
+        var target = jQuery(this).data('target');
+
+        if( jQuery('#'+target).hasClass('active') ){
+            jQuery('#'+target).removeClass('active')
+            jQuery(this).removeClass('active')
+        }else{
+            jQuery('.addon-modal.active').removeClass('active')
+            jQuery('.addon_menu_config_v2').removeClass('active')
+
+            jQuery('#'+target).addClass('active')    
+            jQuery(this).addClass('active')
+        }
     })
 
     //muevo todas las admin notice

@@ -6,7 +6,7 @@ $mgs_elementor_config = [
         'config'    => [
             'label'     => __('Configuración', 'mgs_elementor'),
             'ico'       => 'settings',
-            'callback'  => '_config',
+            'callback'  => '_config_v2',
             'default'   => true   
         ],
         'registro'  => [
@@ -16,6 +16,31 @@ $mgs_elementor_config = [
         ],
     ],
     'addons'    => [
+        'post-rate'  => [
+            'title'     => 'Widget valoración, las estrellitas...',
+            'desc'      => 'Permite agregar un widget de valoracion para las entradas, con la posibilidad de agregar un comentario, se pueden guardad en BBDD las valoraciones y/o enviarlas por mail.',
+            'required'  => __('* Requiere Elementor.', 'mgs_elementor'),
+            'ico'       => '<span class="material-symbols-outlined">star_half</span>',
+            'just_for'  => 'is_elementor',
+            'menu'      => [
+                'post-rate' => [
+                    'label'     => 'Post Rate',
+                    'ico'       => 'star_half',
+                    'class'     => 'MGS_Post_Rate_Admin',
+                    'callback'  => '_post_rate_page_content',
+                ]
+            ]
+        ],
+        'wp-mail'           => [
+            'title'     => 'WP Email',
+            'desc'      => __('Configuración avanzada del envio de correos electrónicos.', 'mgs_elementor'),
+            'config'    => [
+                'title'     => __('Opciones', 'mgs_elementor'),
+                'ico'       => '<span class="material-symbols-outlined">settings</span>',
+                'callback'  => 'MGS_Elementor_WP_Mail'
+            ],
+            'ico'       => '<span class="material-symbols-outlined">mail</span>'
+        ],
         'colorfillani-css'  => [
             'title'     => 'Animaciones con mascaras CSS',
             'desc'      => 'Permite crear animaciones con mascaras CSS, coloridad y super originales',

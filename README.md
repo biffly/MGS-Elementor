@@ -11,7 +11,8 @@ https://dillinger.io/]
 
 # Change Log
 - 0.0.8
-  - Fix Login Replace language switcher compatililidad con WPML
+  - Fix Login Replace language switcher compatililidad con WPML.
+  - Fix, link de Política de privacidad.
 - 0.0.7
   - Actualización Login Replace (alpha)
 - 0.0.6

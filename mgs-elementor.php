@@ -40,25 +40,19 @@ register_deactivation_hook(__FILE__, ['MGS_Elementor_AddOns', 'reset_defaul_sett
 
 //configuracion
 require_once('config.php');
-
 //clases y funciones utiles
 require_once('mgs-compare.php');
-
-//Dummy Content
-require_once('mgs-dummy-content.php');
-
 // registro de widgets
 require_once('mgs-elementor-class-main.php');
-
+//Dummy Content
+if( get_option('mgs-elementor-addon-state-dummy_content')=='on' ) require_once('mgs-dummy-content.php');
 //conditional
-require_once('mgs-conditional.php');
-
+if( get_option('mgs-elementor-addon-state-conditional')=='on' ) require_once('mgs-conditional.php');
 //Image rotation
-require_once('mgs-image-rotation.php');
-
+if( get_option('mgs-elementor-addon-state-image_rotation')=='on' ) require_once('mgs-image-rotation.php');
 //Login Replace
-require_once('mgs-login-replace.php');
-
+if( get_option('mgs-elementor-addon-state-login_replace')=='on' ) require_once('mgs-login-replace.php');
 //css externa
-require_once('mgs-css-external.php');
-new MGS_Elementor_External_CSS();
+if( get_option('mgs-elementor-addon-state-css')=='on' ) require_once('mgs-css-external.php');
+//css externa
+if( get_option('mgs-elementor-addon-state-wp-mail')=='on' ) require_once('mgs_elementor_wp_mail.php');

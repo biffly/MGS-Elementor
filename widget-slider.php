@@ -5,29 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Elementor_MGS_Slider_Widget extends \Elementor\Widget_Base{
-    public function get_name(){
-		return 'mgs_slider';
-	}
-
-    public function get_title(){
-		return 'MGS Slider';
-	}
-
-    public function get_icon(){
-		return 'eicon-code';
-	}
-
-    public function get_custom_help_url(){
-		return 'https://developers.elementor.com/docs/widgets/';
-	}
-
-    public function get_categories() {
-		return ['general'];
-	}
-
-    public function get_keywords() {
-		return ['MGS', 'slider'];
-	}
+    public function get_name(){return 'mgs_slider';}
+    public function get_title(){return 'MGS Slider';}
+    public function get_icon(){return 'eicon-code';}
+    public function get_custom_help_url(){return 'https://developers.elementor.com/docs/widgets/';}
+    public function get_categories(){return ['general'];}
+    public function get_keywords(){return ['MGS', 'slider'];}
 
     protected function register_controls(){
 		$this->start_controls_section(

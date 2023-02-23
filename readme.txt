@@ -35,7 +35,8 @@ Este plugin agrega varias opciones a Elementor, asi tambien funcionalidades extr
 == Changelog ==
 
 = 0.0.8 =
-* Fix Login Replace language switcher compatililidad con WPML
+* Fix Login Replace language switcher compatililidad con WPML.
+* Fix, link de Política de privacidad.
 
 = 0.0.7 =
 * Actualización Login Replace (alpha)

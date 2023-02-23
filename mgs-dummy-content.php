@@ -2,16 +2,66 @@
 
 if( !class_exists('MGS_Dummy_Content') ){
     class MGS_Dummy_Content{
+        public $flag_add_thickbox_needed = false;
+        public $flag_add_thickbox_ajax_img_needed = false;
+
         public function __construct(){
             if( get_option('mgs-elementor-addon-state-dummy_content')=='on' ){
                 add_action('admin_enqueue_scripts', [$this, 'mgs_dummy_content_admin_enqueue_scripts']);
                 add_action('wp_ajax_mgs_dummy_content_generate', [$this, 'mgs_dummy_content_generate_callback']);
+                add_action('wp_ajax_mgs_dummy_content_generate_only_img', [$this, 'mgs_dummy_content_generate_only_img_callback']);
                 add_action('wp_ajax_mgs_dummy_content_delete', [$this, 'mgs_dummy_content_delete_callback']);
 
                 add_filter('display_post_states', [$this, 'display_dummy_status']);
                 add_action('manage_category_custom_column', [$this, 'display_dummy_status_cats'], 999, 3);
                 add_filter('manage_edit-category_columns', [$this, 'add_column_dummy_status_cats']);
+                add_filter('post_row_actions', [$this, 'mgs_dummy_post_row_action'], 10, 2);
+
+                //add_action('admin_enqueue_scripts', [$this, 'mgs_elementor_admin_enqueue_scripts']);
+                add_action('admin_footer', [$this, 'mgs_dummy_admin_footer'], 999);
             }
+        }
+
+        public function mgs_dummy_admin_footer(){
+            $out = '';
+
+            if( $this->flag_add_thickbox_needed ) add_thickbox();
+
+            if( $this->flag_add_thickbox_ajax_img_needed ){
+                $out .= '
+                    <div id="mgs_dummy_content_generate_image_ajax">
+
+                        <div class="mgs_elementor_run mgs_elementor_dummy_content_run">
+                            <div class="mgs-elementor-fake-form">
+                                <div class="mgs-elementor-field-wrapper flex-80">
+                                    <label for="mgs_dummy_content_img_search_ajax">'.__('Buscar imagen, tema.', 'mgs_elementor').'</label>
+                                    <input type="text" class="mgs_elementor_input" id="mgs_dummy_content_img_search_ajax" value="Natural forest">
+                                </div>
+                                <div class="mgs-elementor-field-wrapper flex-20 aling-bottom">
+                                    <button type="button" id="cmd_mgs_dummy_content_generate_ajax" class="mgs_elementor_cmd iconed"><span class="material-symbols-outlined">play_arrow</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="mgs_dummy_content_img_search_ajax_postid" value="">
+                        <div class="mgs_elementor_run mgs_elementor_dummy_content_run mgs_elementor_dummy_image_ajax_loaded">
+                            <h2></h2>
+                            <p></p>
+                            <img>
+                        </div>
+                    </div>
+                ';
+            }
+
+            echo $out;
+        }
+
+        public function mgs_dummy_post_row_action($actions, $post){
+            if( get_post_meta($post->ID, 'mgs_dummy_content', true)=='on' && !has_post_thumbnail($posy->ID) && get_option('mgs-elementor-addon-dummy_content_google_api_key')!='' ){
+                $actions['mgs_dummy_image'] = '<a href="#TB_inline?width=400&height=400&inlineId=mgs_dummy_content_generate_image_ajax&postid='.$post->ID.'" class="x_thickbox" data-postid="'.$post->ID.'">Generar imagen destacada</a>';
+                $this->flag_add_thickbox_needed = true;
+                $this->flag_add_thickbox_ajax_img_needed = true;
+            }
+            return $actions;
         }
 
         public function add_column_dummy_status_cats($columns){
@@ -29,9 +79,12 @@ if( !class_exists('MGS_Dummy_Content') ){
 
         public function display_dummy_status(){
             global $post;
+            $return = [];
             $dummy = ( get_post_meta($post->ID, 'mgs_dummy_content', true)=='on' ) ? true : false;
             if( $dummy ){
-                return [__('Dummy', 'mgs_elementor')];
+                $return['dummy'] = __('Dummy', 'mgs_elementor');
+                if( !has_post_thumbnail($posy->ID) ) $return['no_thumb'] = __('No thumb', 'mgs_elementor');
+                return $return;
             }
 
             return;
@@ -211,6 +264,19 @@ if( !class_exists('MGS_Dummy_Content') ){
             }
 
             echo json_encode($posts);
+            die();
+        }
+
+        public function mgs_dummy_content_generate_only_img_callback(){
+            $imagen = $this->SearchImages(1, $_POST['search']);
+            $img = [
+                'post_id'   => $_POST['postid'],
+                'url'       => $this->CleanURLImage($imagen[0]),
+                'title'     => $imagen[0]->title,
+            ];
+            $img['status'] = $this->UploadImagen($img['url'], $img['title'], $img['post_id']);
+
+            echo json_encode($img);
             die();
         }
 

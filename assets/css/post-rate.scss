@@ -1,0 +1,12 @@
+.mgs_elementor_post_rate{
+    .mgs_elementor_post_rate_form{
+        display: none;
+        .mgs_post_rate-field-group{
+            display: block;
+        }
+    }
+    &.no_voted{
+        .mgs_elementor_post_rate_form{display: flex;}
+    }
+    &.disabled{display: none;}
+}
