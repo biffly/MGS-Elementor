@@ -11,8 +11,11 @@ https://dillinger.io/]
 
 # Change Log
 - 0.0.8
+  - Add Widget valoración, estrellitas con comentarios opcionales
+  - Add WP Email, forma simple de configurar el nombre y desde donde se envian los correos de WP. La opción de envio por SMPT se encuentra en Beta.
   - Fix Login Replace language switcher compatililidad con WPML.
   - Fix, link de Política de privacidad.
+  - Fix, admin issues
 - 0.0.7
   - Actualización Login Replace (alpha)
 - 0.0.6
