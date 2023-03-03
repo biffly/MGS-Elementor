@@ -34,13 +34,15 @@ $mgs_elementor_config = [
         'wp-mail'           => [
             'title'     => 'WP Email',
             'desc'      => __('Configuración avanzada del envio de correos electrónicos.', 'mgs_elementor'),
+            'required'  => '',
             'config'    => [
                 'title'     => __('Opciones', 'mgs_elementor'),
                 'ico'       => '<span class="material-symbols-outlined">settings</span>',
-                'callback'  => 'MGS_Elementor_WP_Mail'
+                'callback'  => 'MGS_Elementor_WP_Mail',
             ],
-            'ico'       => '<span class="material-symbols-outlined">mail</span>'
+            'ico'       => '<span class="material-symbols-outlined">mail</span>',
         ],
+        
         'colorfillani-css'  => [
             'title'     => 'Animaciones con mascaras CSS',
             'desc'      => 'Permite crear animaciones con mascaras CSS, coloridad y super originales',
@@ -71,15 +73,9 @@ $mgs_elementor_config = [
                 'ico'       => '<span class="material-symbols-outlined">settings</span>',
                 'callback'  => 'MGS_Elementor_External_CSS'
             ],
-            'ico'       => '<span class="material-symbols-outlined">css</span>'
+            'ico'       => '<span class="material-symbols-outlined">css</span>',
         ],
-        'posts'             => [
-            'title'     => 'Visualizar posts',
-            'desc'      => __('Cree plantillas de visualización de entradas segun su gusto y placer, luego configure la cantidad, orden y dispocicion. utilice las plantillas de elementor.', 'mgs_elementor'),
-            'required'  => __('* Requiere Elementor.', 'mgs_elementor'),
-            'ico'       => '<span class="material-symbols-outlined">view_list</span>',
-            'just_for'  => 'is_elementor'
-        ],
+        
         'image_rotation'    => [
             'title'     => 'Rotador de imagenes aleatorias',
             'desc'      => __('Agrege imagenes aletorias, como una imagen o como un fondo.', 'mgs_elementor'),
@@ -87,9 +83,18 @@ $mgs_elementor_config = [
             'ico'       => '<span class="material-symbols-outlined">image</span>',
             'just_for'  => 'is_elementor'
         ],
+
+        'posts'             => [
+            'title'     => 'Visualizar posts',
+            'desc'      => __('Cree plantillas de visualización de entradas segun su gusto y placer, luego configure la cantidad, orden y dispocicion. utilice las plantillas de elementor.', 'mgs_elementor'),
+            'required'  => __('* Requiere Elementor.', 'mgs_elementor'),
+            'ico'       => '<span class="material-symbols-outlined">view_list</span>',
+            'just_for'  => 'is_elementor'
+        ],
         'dummy_content'     => [
             'title'     => 'Generador de contenido',
             'desc'      => __('Genera contenido ficticio para entornos de desarrollo. Utiliza la API de google para buscar imagenes de dominio publico y loripsum.net para la generación de los textos.', 'mgs_elementor'),
+            'required'  => '',
             'ico'       => '<span class="material-symbols-outlined">shuffle</span>',
             'run'       => [
                 'title'     => __('Ejecutar', 'mgs_elementor'),
@@ -105,13 +110,15 @@ $mgs_elementor_config = [
         'login_replace'     => [
             'title'     => __('Reemplazo de login', 'mgs_elementor'),
             'desc'      => __('Permite reemplazar la pantalla de login a la administracion de wordpress para dar un aspecto de marca blanca.', 'mgs_elementor'),
+            'required'  => '',
             'ico'       => '<span class="material-symbols-outlined">login</span>',
             'config'    => [
                 'title'     => __('Opciones', 'mgs_elementor'),
                 'ico'       => '<span class="material-symbols-outlined">settings</span>',
                 'callback'  => 'MGS_LoginReplace'
             ],
-        ]
+        ],
+        
         
     ]
 ];

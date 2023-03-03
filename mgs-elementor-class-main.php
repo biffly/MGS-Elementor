@@ -417,14 +417,14 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                                 </div>
                                 <?php }?>
                             </div>
-                            <?php if( isset($addon['config']) ){?>
+                            <?php if( isset($addon['config']) && get_option('mgs-elementor-addon-state-'.$key)=='on' ){?>
                             <div class="addon-modal addon-config" id="mgs-elementor-addon-<?php echo $key?>-config">
                                 <div class="inner">
                                     <?php call_user_func([$addon['config']['callback'], 'config'])?>
                                 </div>
                             </div>
                             <?php }?>
-                            <?php if( isset($addon['run']) ){?>
+                            <?php if( isset($addon['run']) && get_option('mgs-elementor-addon-state-'.$key)=='on' ){?>
                             <div class="addon-modal addon-run" id="mgs-elementor-addon-<?php echo $key?>-run">
                                 <div class="inner">
                                     <?php call_user_func([$addon['config']['callback'], 'run'])?>

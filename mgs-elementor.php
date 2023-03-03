@@ -11,7 +11,7 @@ Text Domain: mgs_elementor
 */
 
 if( !defined('ABSPATH') ){ exit; }
-error_reporting(E_ALL & ~E_NOTICE);
+//error_reporting(E_ALL & ~E_NOTICE);
 
 
 //Plugin Update Checker
