@@ -4,6 +4,15 @@
         .mgs_post_rate-field-group{
             display: block;
         }
+
+        .mgs_post_rate-button-align-stretch{
+            button.mgs_elementor_post_rate_form_button{
+                width: 100%;
+            }
+        }
+        .mgs_post_rate-button-align-start{justify-content: flex-start;}
+        .mgs_post_rate-button-align-end{justify-content: flex-end;}
+        .mgs_post_rate-button-align-center{justify-content: center;}
     }
     &.no_voted{
         .mgs_elementor_post_rate_form{display: flex;}

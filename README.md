@@ -10,6 +10,10 @@ https://dillinger.io/]
 ![GitHub top language](https://img.shields.io/github/languages/top/biffly/MGS-Elementor.svg) ![GitHub issues](https://img.shields.io/github/issues-raw/biffly/MGS-Elementor.svg) ![WP ver min](https://img.shields.io/badge/wordpress-6.1.1-blue.svg?logo=wordpress)  ![WP ver tested](https://img.shields.io/badge/wordpress-6.1.1%20tested-green.svg?logo=wordpress) ![License](https://img.shields.io/badge/license-BSD%202--Clause-blue.svg)
 
 # Change Log
+- 0.0.9
+  - Add Elementor widget The Content.
+  - Fix, Widget valoración, show label.
+  - Fix, Widget valoración, CSS options.
 - 0.0.8
   - Add Widget valoración, estrellitas con comentarios opcionales
   - Add WP Email, forma simple de configurar el nombre y desde donde se envian los correos de WP. La opción de envio por SMPT se encuentra en Beta.

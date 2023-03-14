@@ -249,6 +249,34 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
                     $repeater->end_controls_tab();
                     $repeater->start_controls_tab('form_fields_advanced_tab', ['label' => esc_html__('Avanzado', 'mgs_elementor')]);
                         $repeater->add_control(
+                            'custom_id',
+                            [
+                                'label' => esc_html__('ID', 'mgs_elementor' ),
+                                'type' => \Elementor\Controls_Manager::TEXT,
+                                'description' => esc_html__('Nombre unico del campo en este formulario. Unicamente `A-z 0-9` y guiones bajos sin espacios.', 'mgs_elementor'),
+                                'render_type' => 'none',
+                                'required'      => true,
+                                'conditions' => [
+                                    'terms' => [
+                                        [
+                                            'name' => 'field_type',
+                                            'operator' => 'in',
+                                            'value' => [
+                                                'text',
+                                                'email',
+                                                'textarea',
+                                                'url',
+                                                'tel',
+                                                'radio',
+                                                'select',
+                                                'number',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ]
+                        );
+                        $repeater->add_control(
                             'field_value',
                             [
                                 'label' => esc_html__('Valor por defecto', 'mgs_elementor' ),
@@ -468,7 +496,6 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
                             ],
                         ],
                         'default' => 'stretch',
-                        'prefix_class' => 'elementor%s-button-align-',
                         'condition' => ['add_form' => 'yes'],
                     ]
                 );
@@ -1137,11 +1164,12 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
             $this->add_render_attribute('form', 'class', 'no_form');
         }
 
-        if( empty($settings['button_width']) ){
-			$settings['button_width'] = '100';
-		}
+        if( empty($settings['button_width']) )$settings['button_width'] = '100';
+        if( empty($settings['button_align']) )$settings['button_align'] = 'stretch';
+		
 
 		$this->add_render_attribute('submit-group', 'class', 'elementor-col-' . $settings['button_width'] . ' e-form__buttons');
+		$this->add_render_attribute('submit-group', 'class', 'mgs_post_rate-button-align-' . $settings['button_align']);
 
 		if( !empty( $settings['button_width_tablet'] ) ){
 			$this->add_render_attribute('submit-group', 'class', 'elementor-md-' . $settings['button_width_tablet']);
@@ -1150,6 +1178,8 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
 		if( !empty( $settings['button_width_mobile'] ) ){
 			$this->add_render_attribute('submit-group', 'class', 'elementor-sm-' . $settings['button_width_mobile']);
 		}
+
+
 
 		if( !empty( $settings['button_size'] ) ){
 			$this->add_render_attribute('button', 'class', 'elementor-size-' . $settings['button_size']);
@@ -1228,7 +1258,7 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
                     $print_label = !in_array($item['field_type'], ['hidden', 'html', 'step'], true);
                 ?>
                 <div <?php $this->print_render_attribute_string('field-group'.$item_index)?>>
-                <?php if( $print_label && $item['field_label'] ){?>
+                <?php if( $print_label && $item['field_label'] && $settings['show_labels'] ){?>
 				    <label <?php $this->print_render_attribute_string('label'.$item_index)?>>
 						<?php echo $item['field_label']?>
 					</label>
@@ -1280,7 +1310,7 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
                 <?php
                 }
                 ?>
-                <div <?php $this->print_render_attribute_string('submit-group'); ?>>
+                <div <?php $this->print_render_attribute_string('submit-group'); ?> >
 					<button type="submit" <?php $this->print_render_attribute_string('button')?>>
 						<span <?php $this->print_render_attribute_string('content-wrapper')?>>
 							<?php if( !empty($settings['button_icon']) || !empty($settings['selected_button_icon']) ){?>

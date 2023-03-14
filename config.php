@@ -31,6 +31,13 @@ $mgs_elementor_config = [
                 ]
             ]
         ],
+        'widget-content'    => [
+            'title'     => 'Widget The Content',
+            'desc'      => __('Pensado especialmente para la creación de plantillas, permite cargar el contenido de una entrada con varias opciones adicionales.', 'mgs_elementor'),
+            'required'  => __('* Requiere Elementor.', 'mgs_elementor'),
+            'ico'       => '<span class="material-symbols-outlined">feed</span>',
+            'just_for'  => 'is_elementor'
+        ],
         'wp-mail'           => [
             'title'     => 'WP Email',
             'desc'      => __('Configuración avanzada del envio de correos electrónicos.', 'mgs_elementor'),

@@ -82,6 +82,11 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                 //remove limite de tamaño de imagenes
                 add_filter('big_image_size_threshold', '__return_false');
             }
+
+            //registro widget the conternt
+            if( get_option('mgs-elementor-addon-state-widget-content')=='on' ){
+                add_action('elementor/widgets/register', [$this, 'register_widget_the_content']);
+            }
         }
 
         public function init(){
@@ -267,6 +272,11 @@ if( !class_exists('MGS_Elementor_AddOns') ){
         }
         public function js_css_color_fill_animation_css_admin(){
             wp_enqueue_style('color_fill_animation_css_admin', MGS_ELEMENTOR_PLUGIN_DIR_URL.'/assets/css/color_fill_animation_css_admin.css');
+        }
+
+        public function register_widget_the_content($widgets_manager){
+            require_once('widget-content.php');
+            $widgets_manager->register( new \Elementor_MGS_The_Content() );
         }
 
         public function mgs_elementor_admin_menu(){
