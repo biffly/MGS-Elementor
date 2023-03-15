@@ -511,6 +511,74 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
                 );
             }
         $this->end_controls_section();
+
+        $this->start_controls_section('section_enviar',['label' => esc_html__('Enviar', 'mgs_elementor'),'tab' => \Elementor\Controls_Manager::TAB_CONTENT, 'condition' => ['add_form' => 'yes']]);
+            $this->add_control(
+                'enviar_mail',
+                [
+                    'label' => esc_html__('Enviar por mail?', 'mgs_elementor'),
+                    'type' => \Elementor\Controls_Manager::SWITCHER,
+                    'default' => '',
+                    'separator' => 'before',
+                    'render_type' => 'none',
+                ]
+            );
+            $this->add_control(
+                'enviar_mail_to',
+                [
+                    'label' => esc_html__('Enviar a', 'mgs_elementor'),
+                    'type' => \Elementor\Controls_Manager::TEXT,
+                    'default' => get_bloginfo('admin_email'),
+                    'placeholder' => get_bloginfo('admin_email'),
+                    'label_block' => true,
+                    'condition' => [
+                        'enviar_mail'          => 'yes'
+                    ],
+                    'render_type' => 'none',
+                ]
+            );
+            $this->add_control(
+                'enviar_mail_subget',
+                [
+                    'label' => esc_html__('Asunto', 'mgs_elementor'),
+                    'type' => \Elementor\Controls_Manager::TEXT,
+                    'default' => get_bloginfo('name').' | '.__('Nueva valoración', 'mgs_elementor'),
+                    'placeholder' => get_bloginfo('name').' | '.__('Nueva valoración', 'mgs_elementor'),
+                    'label_block' => true,
+                    'condition' => [
+                        'enviar_mail'          => 'yes'
+                    ],
+                    'render_type' => 'none',
+                ]
+            );
+            $this->add_control(
+                'enviar_mail_add_text',
+                [
+                    'label' => esc_html__('Agregar un texto al email?', 'mgs_elementor'),
+                    'type' => \Elementor\Controls_Manager::SWITCHER,
+                    'default' => '',
+                    'separator' => 'before',
+                    'render_type' => 'none',
+                    'condition' => [
+                        'enviar_mail'   => 'yes'
+                    ]
+                ]
+            );
+            $this->add_control(
+                'enviar_mail_text',
+                [
+                    'label' => esc_html__('Texto', 'mgs_elementor'),
+                    'type' => \Elementor\Controls_Manager::TEXTAREA,
+                    'default' => '',
+                    'label_block' => true,
+                    'condition' => [
+                        'enviar_mail'          => 'yes',
+                        'enviar_mail_add_text'          => 'yes'
+                    ],
+                    'render_type' => 'none',
+                ]
+            );
+        $this->end_controls_section();
         
         $this->start_controls_section('section_messages',['label' => esc_html__('Avisos', 'mgs_elementor'),'tab' => \Elementor\Controls_Manager::TAB_CONTENT]);
             $this->add_control(
@@ -1113,6 +1181,8 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
             $form_id = 'mgs_elementor_post_rate_'.$this->get_id();
         }
 
+        //$settings['label_position'] = ( isset($settings['label_position']) ) ? $settings['label_position'] : '';
+
         $this->add_render_attribute(
 			[
                 'form'          => [
@@ -1135,7 +1205,7 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
 				'wrapper' => [
 					'class' => [
 						'elementor-form-fields-wrapper',
-						'elementor-labels-' . $settings['label_position'],
+						//'elementor-labels-' . $settings['label_position'],
 					],
 				],
 				'submit-group' => [
@@ -1231,6 +1301,13 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
 			<?php if( is_singular() ){?>
 			<input type="hidden" name="queried_id" value="<?php echo get_the_ID()?>"/>
 			<?php }?>
+
+            <?php if( $settings['enviar_mail']=='yes' ){?>
+                <input type="hidden" name="send_email_to" value="<?php echo $settings['enviar_mail_to']?>" />
+                <input type="hidden" name="enviar_mail_subget" value="<?php echo $settings['enviar_mail_subget']?>" />
+                <input type="hidden" name="enviar_mail_add_text" value="<?php echo $settings['enviar_mail_add_text']?>" />
+                <input type="hidden" name="enviar_mail_text" value="<?php echo $settings['enviar_mail_text']?>" />
+            <?php }?>
             
 			<div <?php $this->print_render_attribute_string('estrellas');?>>
                 <a href="#" class="estrella estrella1" data-value="1" data-post="<?php echo get_the_ID()?>" data-submit_id="<?php echo $submit_id?>" data-parent="<?php echo 'mgs_elementor_post_rate_'.$this->get_id()?>"><?php \Elementor\Icons_Manager::render_icon($settings['icon'], ['aria-hidden'=>'true'])?></a>
@@ -1246,7 +1323,7 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
             <div <?php $this->print_render_attribute_string('comment');?>>
                 <?php
                 foreach( $settings['form_fields'] as $item_index => $item ){
-					$item['input_size'] = $settings['input_size'];
+					$item['input_size'] = ( isset($settings['input_size']) ) ? $settings['input_size'] : 'sm';
                     if( empty($item['field_type']) || $item['field_type']=='' ){
                         $item['field_type'] = 'text';
                         $settings['form_fields'][$item_index]['field_type'] = 'text';
@@ -1258,7 +1335,7 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
                     $print_label = !in_array($item['field_type'], ['hidden', 'html', 'step'], true);
                 ?>
                 <div <?php $this->print_render_attribute_string('field-group'.$item_index)?>>
-                <?php if( $print_label && $item['field_label'] && $settings['show_labels'] ){?>
+                <?php if( $print_label && $item['field_label'] && isset($settings['show_labels']) && $settings['show_labels'] ){?>
 				    <label <?php $this->print_render_attribute_string('label'.$item_index)?>>
 						<?php echo $item['field_label']?>
 					</label>
@@ -1403,7 +1480,7 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
 			$this->add_render_attribute( 'field-group' . $i, 'class', 'elementor-md-' . $item['width_tablet'] );
 		}
 
-		if ( $item['allow_multiple'] ) {
+		if ( isset($item['allow_multiple']) && $item['allow_multiple'] ) {
 			$this->add_render_attribute( 'field-group' . $i, 'class', 'elementor-field-type-' . $item['field_type'] . '-multiple' );
 		}
 
@@ -1420,7 +1497,7 @@ class Elementor_MGS_Post_Rate_Widget extends \Elementor\Widget_Base{
 			$this->add_render_attribute( 'input' . $i, 'value', $item['field_value'] );
 		}
 
-		if( $instance['show_labels'] ){
+		if( isset($instance['show_labels']) && $instance['show_labels'] ){
 			$this->add_render_attribute('label'.$i, 'class', 'elementor-screen-only');
 			$this->add_render_attribute('label'.$i, 'class', 'elementor-screen-only-'.$instance['show_labels']);
 		}

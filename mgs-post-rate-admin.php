@@ -137,7 +137,7 @@ if( !class_exists('MGS_Post_Rate_Admin') ){
                                     <th>
                                         <div class="comment_actions">
                                             <input type="checkbox" name="submits_id[]" class="submits_id" value="<?php echo $comentario->submit_id?>">
-                                            <a href="#" class="view-details" data-submit_id="<?php echo $comentario->submit_id?>"><?php echo $comentario->created_at_gmt?></a>
+                                            <a href="<?php echo $comentario->submit_id?>" class="view-details" data-submit_id="<?php echo $comentario->submit_id?>"><?php echo $comentario->created_at_gmt?></a>
                                         </div>
                                         <div class="mgs-post-rate-share-bar">
                                             <a href="#" class="tomail" data-post="<?php echo $_GET['view']?>" data-submit_id="<?php echo $comentario->submit_id?>"><span class="material-symbols-outlined">forward_to_inbox</span></a>
@@ -177,6 +177,12 @@ if( !class_exists('MGS_Post_Rate_Admin') ){
                         </div>
                         <script>
                             jQuery(document).ready(function(){
+
+                                var submit_id_hash = window.location.hash;
+                                if( submit_id_hash!='' ){
+                                    submit_id_hash = submit_id_hash.replace('#', '');
+                                    ViewDetails(submit_id_hash);
+                                }
 
                                 jQuery('.tomail').on('click', function(e){
                                     e.preventDefault();
@@ -331,14 +337,10 @@ if( !class_exists('MGS_Post_Rate_Admin') ){
                                     e.preventDefault();
                                     var id = jQuery(this).data('submit_id');
                                     var th_parent = jQuery(this).closest('th');
-
-                                    if( jQuery('.row-'+id).hasClass('active') ){
-                                        jQuery('.row-'+id).removeClass('active')
-                                    }else{
-                                        jQuery('.row-comment-content').removeClass('active')
-                                        jQuery('.row-'+id).addClass('active')
-                                    }
+                                    ViewDetails(id);
                                 });
+
+                                
 
                                 jQuery('input.action-submits_id').on('click', function(){
                                     if( jQuery(this).is(':checked') ){
@@ -353,6 +355,16 @@ if( !class_exists('MGS_Post_Rate_Admin') ){
                                 jQuery('input.submits_id').on('click', function(){
                                     check_checkboxs()
                                 })
+
+                                function ViewDetails(id){
+                                    if( jQuery('.row-'+id).hasClass('active') ){
+                                        jQuery('.row-'+id).removeClass('active')
+                                    }else{
+                                        jQuery('.row-comment-content').removeClass('active')
+                                        jQuery('.row-'+id).addClass('active')
+                                        window.location.hash = id;
+                                    }
+                                }
 
                                 function SentToMail(post, submit_id, to, asunto){
                                     bootbox.dialog({ 
@@ -544,7 +556,11 @@ if( !class_exists('MGS_Post_Rate_Admin') ){
                 $current_veces = get_post_meta($post_id, 'mgs_post_rating_veces', true);
                 if( $current_value>0 && $current_veces>0 ){
                     //echo round($current_value/$current_veces, 1);
-                    list($entero, $decimal) = explode('.', round($current_value/$current_veces, 1));
+                    $dd = explode('.', round($current_value/$current_veces, 1));
+                    $entero = ( isset($dd[0]) ) ? $dd[0] : 0;
+                    $decimal = ( isset($dd[1]) ) ? $dd[1] : 0;
+                    //list($entero, $decimal) = explode('.', round($current_value/$current_veces, 1));
+
                     $put_decimal = false;
                     echo '<div class="mgs-pr-admin-view mgs-pr-admin-view-'.$post_id.'">';
                     for( $i=1; $i<=5; $i++ ){

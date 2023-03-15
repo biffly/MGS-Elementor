@@ -191,6 +191,9 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                             ]
                         );
                     }
+
+                    $this->send_post_rate_email($post);
+
                     echo json_encode([
                         'state'     => 'ok',
                         'post'      => $post
@@ -240,6 +243,49 @@ if( !class_exists('MGS_Elementor_AddOns') ){
 
             require_once ABSPATH.'wp-admin/includes/upgrade.php';
             dbDelta($e_post_rate_tbl.$e_post_rate_comments_tbl);
+        }
+        public function send_post_rate_email($post){
+            if( isset($post['send_email_to']) && isset($post['send_email_subget']) && isset($post['submit_id']) ){
+                if( $post['send_email_to']!='' ){
+                    $to = $post['send_email_to'];
+                }else{
+                    return;
+                }
+                if( $post['send_email_subget']!='' ){
+                    $asunto = $post['send_email_subget'];
+                }else{
+                    return;
+                }
+                if( $post['submit_id']!='' ){
+                    global $wpdb;
+                    $t1 = self::$post_rate_tbl;
+                    $t2 = self::$post_rate_comments_tbl;
+                    $resu_1 = $wpdb->get_row("SELECT * FROM $t1 WHERE submit_id='".$post['submit_id']."'");
+                    $resu_2 = $wpdb->get_results("SELECT * FROM $t2 WHERE submit_id='".$post['submit_id']."'");
+                    $out = '';
+                    $out = '<strong>'.__('Valoración', 'mgs_elementor').':</strong> '.$resu_1->post_rate.'<br/>';
+                    $out .= '<strong>'.__('Fecha', 'mgs_elementor').':</strong> '.$resu_1->created_at_gmt.'<br/>';
+                    $out .= '<strong>'.__('Lugar', 'mgs_elementor').':</strong> '.get_the_title($resu_1->post_id).' (<a href="'.get_the_permalink($resu_1->post_id).'" target="_balnk">'.__('Ver', 'mgs_elementor').'</a>) (<a href="'.get_admin_url().'options-general.php?page=mgs_elementor_admin&sec=post-rate&addon=post-rate&view='.$resu_1->post_id.'#'.$post['submit_id'].'" target="_balnk">'.__('Admin', 'mgs_elementor').'</a>)<br/>';
+                    foreach( $resu_2 as $f ){
+                        $out .= '<strong>'.$f->key.':</strong> '.$f->value.'<br/>';
+                    }
+                    $out = '<strong>ID:</strong> '.$post['submit_id'].'<br/>';
+                    if( isset($post['enviar_mail_add_text']) && $post['enviar_mail_add_text']=='yes' ){
+                        $out .= '<br/><br/>'.$post['enviar_mail_text'];
+                    }
+                    $out = '<br/><br/><hr><br/>Enviado en forma automática por MGS Elementor Post Rate.';
+                    $headers = array('Content-Type: text/html; charset=UTF-8');
+                    wp_mail($to, $asunto, $out, $headers);
+                    return;
+                }else{
+                    return;
+                }
+
+
+
+            }else{
+                return;
+            }
         }
 
         public function register_posts_widget($widgets_manager){
