@@ -192,11 +192,12 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                         );
                     }
 
-                    $this->send_post_rate_email($post);
+                    $mail = $this->send_post_rate_email($post);
 
                     echo json_encode([
                         'state'     => 'ok',
-                        'post'      => $post
+                        'post'      => $post,
+                        'mail'      => $mail
                     ]);
                     die();
                 }
@@ -245,16 +246,22 @@ if( !class_exists('MGS_Elementor_AddOns') ){
             dbDelta($e_post_rate_tbl.$e_post_rate_comments_tbl);
         }
         public function send_post_rate_email($post){
-            if( isset($post['send_email_to']) && isset($post['send_email_subget']) && isset($post['submit_id']) ){
+            if( isset($post['send_email_to']) && isset($post['enviar_mail_subget']) && isset($post['submit_id']) ){
                 if( $post['send_email_to']!='' ){
                     $to = $post['send_email_to'];
                 }else{
-                    return;
+                    return [
+                        'state'         => 'error',
+                        'send_email_to' => 'empty'
+                    ];
                 }
-                if( $post['send_email_subget']!='' ){
-                    $asunto = $post['send_email_subget'];
+                if( $post['enviar_mail_subget']!='' ){
+                    $asunto = $post['enviar_mail_subget'];
                 }else{
-                    return;
+                    return [
+                        'state'             => 'error',
+                        'enviar_mail_subget' => 'empty'
+                    ];
                 }
                 if( $post['submit_id']!='' ){
                     global $wpdb;
@@ -269,22 +276,45 @@ if( !class_exists('MGS_Elementor_AddOns') ){
                     foreach( $resu_2 as $f ){
                         $out .= '<strong>'.$f->key.':</strong> '.$f->value.'<br/>';
                     }
-                    $out = '<strong>ID:</strong> '.$post['submit_id'].'<br/>';
+                    $out .= '<strong>ID:</strong> '.$post['submit_id'].'<br/>';
                     if( isset($post['enviar_mail_add_text']) && $post['enviar_mail_add_text']=='yes' ){
                         $out .= '<br/><br/>'.$post['enviar_mail_text'];
                     }
-                    $out = '<br/><br/><hr><br/>Enviado en forma automática por MGS Elementor Post Rate.';
+                    $out .= '<br/><br/><hr><br/>Enviado en forma automática por MGS Elementor Post Rate.';
                     $headers = array('Content-Type: text/html; charset=UTF-8');
-                    wp_mail($to, $asunto, $out, $headers);
-                    return;
+                    if( wp_mail($to, $asunto, $out, $headers) ){
+                        return [
+                            'state' => 'ok',
+                            'mail'  => [
+                                'to'        => $to,
+                                'subget'    => $asunto,
+                                'body'      => $out
+                            ]
+                        ];    
+                    }else{
+                        return [
+                            'state' => 'error',
+                            'mail'  => [
+                                'to'        => $to,
+                                'subget'    => $asunto,
+                                'body'      => $out
+                            ]
+                        ];   
+                    }
                 }else{
-                    return;
+                    return [
+                        'state'             => 'error',
+                        'submit_id'         => 'empty'
+                    ];
                 }
 
 
 
             }else{
-                return;
+                return [
+                    'state' => 'error',
+                    'post'  => 'empty'
+                ];
             }
         }
 
